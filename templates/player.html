@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{player.position}} {{player.name}}{% endblock %}
+{% block content %}
+  <div>{{player.name}}</div>
+  <div>{{player.birthday}}</div>
+  <div>{{player.position}}</div>
+  <div id="pitching-ratings"></div>
+  <div id="batting-ratings"></div>
+  <script>
+  $(function() {
+    {% if player.position == 'P' %}
+      $.get('pitching', function(html) {
+        $('#pitching-ratings').html(html);
+      });
+    {% else %}
+      $.get('batting', function(html) {
+        $('#batting-ratings').html(html);
+      });
+    {% endif %}
+  });
+  </script>
+{% endblock %}

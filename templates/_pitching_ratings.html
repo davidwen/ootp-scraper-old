@@ -1,0 +1,54 @@
+<div>
+  <table>
+    <thead>
+      <th></th>
+      <th colspan="3">CURRENT</th>
+      <th colspan="3">CURRENT vs L</th>
+      <th colspan="3">CURRENT vs R</th>
+      <th colspan="3">POTENTIAL</th>
+      <th colspan="3">OTHER</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Date</td>
+        <td>STU</td>
+        <td>MOV</td>
+        <td>CON</td>
+        <td>STU</td>
+        <td>MOV</td>
+        <td>CON</td>
+        <td>STU</td>
+        <td>MOV</td>
+        <td>CON</td>
+        <td>STU</td>
+        <td>MOV</td>
+        <td>CON</td>
+        <td>STA</td>
+        <td>VEL</td>
+        <td>HOL</td>
+        <td>GB%</td>
+      </tr>
+      {% for row in rows %}
+        <tr>
+          <td>{{row.date}}
+          <td>{{row.stuff}}</td>
+          <td>{{row.movement}}</td>
+          <td>{{row.control}}</td>
+          <td>{{row.stuff_l}}</td>
+          <td>{{row.movement_l}}</td>
+          <td>{{row.control_l}}</td>
+          <td>{{row.stuff_r}}</td>
+          <td>{{row.movement_r}}</td>
+          <td>{{row.control_r}}</td>
+          <td>{{row.pot_stuff}}</td>
+          <td>{{row.pot_movement}}</td>
+          <td>{{row.pot_control}}</td>
+          <td>{{row.stamina}}</td>
+          <td>{{row.velocity}}</td>
+          <td>{{row.hold}}</td>
+          <td>{{row.groundball}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

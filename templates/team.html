@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{team.name}}{% endblock %}
+{% block content %}
+  <div>{{team.name}}</div>
+  <div>{{team.level}}</div>
+  <div>{{date}}</div>
+
+  {% for pr in pitching_ratings %}
+    <div><a href="/player/{{pr.player_id}}">{{pr.position}} {{pr.name}} ({{pr.level}})</a></div>
+  {% endfor %}
+
+  {% for br in batting_ratings %}
+    <div><a href="/player/{{br.player_id}}">{{br.position}} {{br.name}} ({{br.level}})</a></div>
+  {% endfor %}
+  <script>
+  $(function() {
+  });
+  </script>
+{% endblock %}
