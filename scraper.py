@@ -7,6 +7,7 @@ from contextlib import closing
 
 DATABASE = 'wbh.db'
 ROOT = '/Users/davidwen/Library/Application Support/Out of the Park Developments/OOTP Baseball 14/saved_games/WBH.lg/news/almanac_2034'
+LEAGUES = [100, 102, 104, 112, 116, 120, 124]
 
 RATINGS = {
     'Very High': 5,
@@ -120,17 +121,16 @@ class Scraper:
 
     def scrape(self):
         with closing(sqlite3.connect(DATABASE)) as db:
-            skip = True
             for dirname, dirnames, filenames in os.walk(ROOT + '/players'):
                 for filename in filenames:
                     if filename[0] == '.':
                         continue
                     player_id = int(filename[len('player_'):filename.find('.')])
-                    if player_id == 2410:
-                        skip = False
-                    if skip:
-                        continue
                     self.read_player_file(db, player_id, os.path.join(dirname, filename))
+            for league in LEAGUES:
+                filename = ROOT + '/leagues/league_' + str(league) + '_waiver_wire_block.html'
+                self.read_waiver_wire(db, filename)
+
 
     def format_date(self, date):
         date_parts = date.split('/')
@@ -183,7 +183,6 @@ class Scraper:
                 self.set_date(cur, soup)
 
             self.set_team(cur, player_id, soup)
-            self.fill_position(cur, player_id, soup)
             self.set_batting_ratings(cur, player_id, soup)
             self.set_pitching_ratings(cur, player_id, soup)
             self.set_run_ratings(cur, player_id, soup)
@@ -217,16 +216,6 @@ class Scraper:
                 values
                 (?, ?, ?)
                 ''', params)
-
-    def fill_position(self, cur, player_id, soup):
-        data_line = soup.find(text=re.compile('BATS:'))
-        position = data_line.split(' ')[0]
-        cur.execute('''
-            update players set 
-            position = ?
-            where id = ?
-            ''', [position, player_id])
-
 
     def set_batting_ratings(self, cur, player_id, soup):
         if soup.find(text=re.compile('BATTING RATINGS')) is None:
@@ -428,6 +417,24 @@ class Scraper:
             self.date_id = cur.lastrowid
         else:
             self.date_id = row[0]
+
+    def read_waiver_wire(self, db, filename):
+        with open(filename, 'rb') as f:
+            soup = BeautifulSoup(f.read())
+            cur = db.cursor()
+
+            links = soup.find_all('a')
+            for link in links:
+                href = link.get('href')
+                if href.find('/players/') > 0:
+                    player_id = int(href[href.find('player_') + 7 : href.find('html') - 1])
+                    cur.execute('''
+                        insert into waiver_wire
+                        (player_id, date_id)
+                        values
+                        (?, ?)
+                        ''', [player_id, self.date_id])
+            db.commit()
 
 if __name__ == '__main__':
     scraper = Scraper()

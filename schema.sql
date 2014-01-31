@@ -125,3 +125,9 @@ CREATE TABLE IF NOT EXISTS teams(
     level TEXT,
     parent_id INTEGER,
     FOREIGN KEY (parent_id) REFERENCES teams(id));
+
+CREATE TABLE IF NOT EXISTS waiver_wire(
+    player_id INTEGER,
+    date_id INTEGER,
+    PRIMARY KEY (player_id, date_id)
+)
