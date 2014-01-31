@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Global Improvers{% endblock %}
+{% block content %}
+  <h1>Global Improvers</h1>
+  <div>{{date}}</div>
+
+  <h4>Improved Batters</h4>
+  <div id="improved-batting-ratings"></div>
+
+  <h4>Improved Pitchers</h4>
+  <div id="improved-pitching-ratings"></div>
+
+  <script>
+  $(function() {
+    $.get('/improvers/{{date_id}}/batting', function(html) {
+        $('#improved-batting-ratings').html(html);
+      });
+    $.get('/improvers/{{date_id}}/pitching', function(html) {
+        $('#improved-pitching-ratings').html(html);
+      });
+  });
+  </script>
+{% endblock %}

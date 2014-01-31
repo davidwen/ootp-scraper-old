@@ -1,21 +1,15 @@
 <table class="table ratings-table">
   <thead>
     <th></th>
+    <th></th>
     <th colspan="3">CURRENT</th>
-    <th colspan="3">CURRENT vs L</th>
-    <th colspan="3">CURRENT vs R</th>
     <th colspan="3">POTENTIAL</th>
     <th colspan="4">OTHER</th>
   </thead>
   <tbody>
     <tr class="subheader">
       <td class="player-name">Player</td>
-      <td>STU</td>
-      <td>MOV</td>
-      <td>CON</td>
-      <td>STU</td>
-      <td>MOV</td>
-      <td>CON</td>
+      <td class="ml-team-name">ML Team</td>
       <td>STU</td>
       <td>MOV</td>
       <td>CON</td>
@@ -31,18 +25,13 @@
       <tr>
         <td rowspan="2" class="player-name">
           <a href="/player/{{id}}">
-            {{ratings[id].position}} {{ratings[id].name}} ({{ratings[id].level}})
+            {{ratings[id].position}} {{ratings[id].name}} ({{ratings[id].level}})</td>
           </a>
         </td>
+        <td rowspan="2" class="ml-team-name">{{ratings[id].ml_team}}</td>
         <td class="current">{{prev_ratings[id].stuff}}</td>
         <td class="current">{{prev_ratings[id].movement}}</td>
         <td class="current">{{prev_ratings[id].control}}</td>
-        <td class="vs-l">{{prev_ratings[id].stuff_l}}</td>
-        <td class="vs-l">{{prev_ratings[id].movement_l}}</td>
-        <td class="vs-l">{{prev_ratings[id].control_l}}</td>
-        <td class="vs-r">{{prev_ratings[id].stuff_r}}</td>
-        <td class="vs-r">{{prev_ratings[id].movement_r}}</td>
-        <td class="vs-r">{{prev_ratings[id].control_r}}</td>
         <td class="potential">{{prev_ratings[id].pot_stuff}}</td>
         <td class="potential">{{prev_ratings[id].pot_movement}}</td>
         <td class="potential">{{prev_ratings[id].pot_control}}</td>
@@ -55,12 +44,6 @@
         <td class="{{diff_classes[id].stuff}} current">{{ratings[id].stuff}}</td>
         <td class="{{diff_classes[id].movement}} current">{{ratings[id].movement}}</td>
         <td class="{{diff_classes[id].control}} current">{{ratings[id].control}}</td>
-        <td class="{{diff_classes[id].stuff_l}} vs-l">{{ratings[id].stuff_l}}</td>
-        <td class="{{diff_classes[id].movement_l}} vs-l">{{ratings[id].movement_l}}</td>
-        <td class="{{diff_classes[id].control_l}} vs-l">{{ratings[id].control_l}}</td>
-        <td class="{{diff_classes[id].stuff_r}} vs-r">{{ratings[id].stuff_r}}</td>
-        <td class="{{diff_classes[id].movement_r}} vs-r">{{ratings[id].movement_r}}</td>
-        <td class="{{diff_classes[id].control_r}} vs-r">{{ratings[id].control_r}}</td>
         <td class="{{diff_classes[id].pot_stuff}} potential">{{ratings[id].pot_stuff}}</td>
         <td class="{{diff_classes[id].pot_movement}} potential">{{ratings[id].pot_movement}}</td>
         <td class="{{diff_classes[id].pot_control}} potential">{{ratings[id].pot_control}}</td>

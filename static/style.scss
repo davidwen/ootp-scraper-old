@@ -30,7 +30,10 @@
     }
 }
 
-#team-batting-ratings, #team-pitching-ratings {
+#team-batting-ratings,
+#team-pitching-ratings,
+#improved-batting-ratings,
+#improved-pitching-ratings {
     margin-bottom: 100px;
 
     tr:nth-child(odd), table {
@@ -40,16 +43,12 @@
     .subheader td {
         font-weight: bold;
         vertical-align: middle;
-
-        &:first-child {
-            font-size: 14px;
-        }        
     }
 
     td {
         font-size: 11px;
 
-        &.player-name {
+        &.player-name, &.ml-team-name {
             font-size: 13px;
             text-align: left;
             vertical-align: middle;

@@ -1,24 +1,14 @@
 <table class="table ratings-table">
   <thead>
     <th></th>
+    <th></th>
     <th colspan="5">CURRENT</th>
-    <th colspan="5">CURRENT vs L</th>
-    <th colspan="5">CURRENT vs R</th>
     <th colspan="5">POTENTIAL</th>
   </thead>
   <tbody>
     <tr class="subheader">
       <td class="player-name">Player</td>
-      <td>CON</td>
-      <td>GAP</td>
-      <td>POW</td>
-      <td>EYE</td>
-      <td>K</td>
-      <td>CON</td>
-      <td>GAP</td>
-      <td>POW</td>
-      <td>EYE</td>
-      <td>K</td>
+      <td class="ml-team-name">ML Team</td>
       <td>CON</td>
       <td>GAP</td>
       <td>POW</td>
@@ -37,21 +27,12 @@
             {{ratings[id].position}} {{ratings[id].name}} ({{ratings[id].level}})
           </a>
         </td>
+        <td rowspan="2" class="ml-team-name">{{ratings[id].ml_team}}</td>
         <td class="current">{{prev_ratings[id].contact}}</td>
         <td class="current">{{prev_ratings[id].gap}}</td>
         <td class="current">{{prev_ratings[id].power}}</td>
         <td class="current">{{prev_ratings[id].eye}}</td>
         <td class="current">{{prev_ratings[id].avoid_k}}</td>
-        <td class="vs-l">{{prev_ratings[id].contact_l}}</td>
-        <td class="vs-l">{{prev_ratings[id].gap_l}}</td>
-        <td class="vs-l">{{prev_ratings[id].power_l}}</td>
-        <td class="vs-l">{{prev_ratings[id].eye_l}}</td>
-        <td class="vs-l">{{prev_ratings[id].avoid_k_l}}</td>
-        <td class="vs-r">{{prev_ratings[id].contact_r}}</td>
-        <td class="vs-r">{{prev_ratings[id].gap_r}}</td>
-        <td class="vs-r">{{prev_ratings[id].power_r}}</td>
-        <td class="vs-r">{{prev_ratings[id].eye_r}}</td>
-        <td class="vs-r">{{prev_ratings[id].avoid_k_r}}</td>
         <td class="potential">{{prev_ratings[id].pot_contact}}</td>
         <td class="potential">{{prev_ratings[id].pot_gap}}</td>
         <td class="potential">{{prev_ratings[id].pot_power}}</td>
@@ -64,16 +45,6 @@
         <td class="{{diff_classes[id].power}} current">{{ratings[id].power}}</td>
         <td class="{{diff_classes[id].eye}} current">{{ratings[id].eye}}</td>
         <td class="{{diff_classes[id].avoid_k}} current">{{ratings[id].avoid_k}}</td>
-        <td class="{{diff_classes[id].contact_l}} vs-l">{{ratings[id].contact_l}}</td>
-        <td class="{{diff_classes[id].gap_l}} vs-l">{{ratings[id].gap_l}}</td>
-        <td class="{{diff_classes[id].power_l}} vs-l">{{ratings[id].power_l}}</td>
-        <td class="{{diff_classes[id].eye_l}} vs-l">{{ratings[id].eye_l}}</td>
-        <td class="{{diff_classes[id].avoid_k_l}} vs-l">{{ratings[id].avoid_k_l}}</td>
-        <td class="{{diff_classes[id].contact_r}} vs-r">{{ratings[id].contact_r}}</td>
-        <td class="{{diff_classes[id].gap_r}} vs-r">{{ratings[id].gap_r}}</td>
-        <td class="{{diff_classes[id].power_r}} vs-r">{{ratings[id].power_r}}</td>
-        <td class="{{diff_classes[id].eye_r}} vs-r">{{ratings[id].eye_r}}</td>
-        <td class="{{diff_classes[id].avoid_k_r}} vs-r">{{ratings[id].avoid_k_r}}</td>
         <td class="{{diff_classes[id].pot_contact}} potential">{{ratings[id].pot_contact}}</td>
         <td class="{{diff_classes[id].pot_gap}} potential">{{ratings[id].pot_gap}}</td>
         <td class="{{diff_classes[id].pot_power}} potential">{{ratings[id].pot_power}}</td>

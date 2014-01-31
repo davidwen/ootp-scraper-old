@@ -15,24 +15,49 @@
   .ratings-table .other {
     background-color: #df7c72; }
 
-#team-batting-ratings, #team-pitching-ratings {
+#team-batting-ratings,
+#team-pitching-ratings,
+#improved-batting-ratings,
+#improved-pitching-ratings {
   margin-bottom: 100px; }
-  #team-batting-ratings tr:nth-child(odd), #team-batting-ratings table, #team-pitching-ratings tr:nth-child(odd), #team-pitching-ratings table {
+  #team-batting-ratings tr:nth-child(odd), #team-batting-ratings table,
+  #team-pitching-ratings tr:nth-child(odd),
+  #team-pitching-ratings table,
+  #improved-batting-ratings tr:nth-child(odd),
+  #improved-batting-ratings table,
+  #improved-pitching-ratings tr:nth-child(odd),
+  #improved-pitching-ratings table {
     border-bottom: 2px solid black; }
-  #team-batting-ratings .subheader td, #team-pitching-ratings .subheader td {
+  #team-batting-ratings .subheader td,
+  #team-pitching-ratings .subheader td,
+  #improved-batting-ratings .subheader td,
+  #improved-pitching-ratings .subheader td {
     font-weight: bold;
     vertical-align: middle; }
-    #team-batting-ratings .subheader td:first-child, #team-pitching-ratings .subheader td:first-child {
-      font-size: 14px; }
-  #team-batting-ratings td, #team-pitching-ratings td {
+  #team-batting-ratings td,
+  #team-pitching-ratings td,
+  #improved-batting-ratings td,
+  #improved-pitching-ratings td {
     font-size: 11px; }
-    #team-batting-ratings td.player-name, #team-pitching-ratings td.player-name {
+    #team-batting-ratings td.player-name, #team-batting-ratings td.ml-team-name,
+    #team-pitching-ratings td.player-name,
+    #team-pitching-ratings td.ml-team-name,
+    #improved-batting-ratings td.player-name,
+    #improved-batting-ratings td.ml-team-name,
+    #improved-pitching-ratings td.player-name,
+    #improved-pitching-ratings td.ml-team-name {
       font-size: 13px;
       text-align: left;
       vertical-align: middle; }
-    #team-batting-ratings td.increase, #team-pitching-ratings td.increase {
+    #team-batting-ratings td.increase,
+    #team-pitching-ratings td.increase,
+    #improved-batting-ratings td.increase,
+    #improved-pitching-ratings td.increase {
       color: blue;
       text-decoration: underline; }
-    #team-batting-ratings td.decrease, #team-pitching-ratings td.decrease {
+    #team-batting-ratings td.decrease,
+    #team-pitching-ratings td.decrease,
+    #improved-batting-ratings td.decrease,
+    #improved-pitching-ratings td.decrease {
       color: red;
       text-decoration: underline; }
