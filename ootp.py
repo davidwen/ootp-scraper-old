@@ -231,10 +231,11 @@ def improved_batting(date_id):
           on br_later.player_id = br.player_id
           and br_later.date_id >= br.date_id
         where br.player_id in ({seq})
+        and br.date_id <= ?
         group by br.player_id, br.date_id
         having position = 2
         '''.format(seq=','.join(['?']*len(ratings)))
-    cur.execute(sql, ratings.keys())
+    cur.execute(sql, ratings.keys() + [date_id])
     prev_rows = cur.fetchall()
     prev_ratings = {}
     diff_classes = {}
@@ -290,10 +291,11 @@ def improved_pitching(date_id):
           on pr_later.player_id = pr.player_id
           and pr_later.date_id >= pr.date_id
         where pr.player_id in ({seq})
+        and pr.date_id <= ?
         group by pr.player_id, pr.date_id
         having position = 2
         '''.format(seq=','.join(['?']*len(ratings)))
-    cur.execute(sql, ratings.keys())
+    cur.execute(sql, ratings.keys() + [date_id])
     prev_rows = cur.fetchall()
     prev_ratings = {}
     diff_classes = {}
