@@ -201,7 +201,7 @@ def improvers_date(date_id):
 
 @app.route('/improvers/<date_id>/batting')
 def improved_batting(date_id):
-    date_id, date = get_date()
+    date_id, date = get_date(date_id=date_id)
 
     cur = g.db.cursor()
     cur.execute('''
@@ -261,7 +261,7 @@ def improved_batting(date_id):
 
 @app.route('/improvers/<date_id>/pitching')
 def improved_pitching(date_id):
-    date_id, date = get_date()
+    date_id, date = get_date(date_id=date_id)
 
     cur = g.db.cursor()
     cur.execute('''
@@ -318,6 +318,70 @@ def improved_pitching(date_id):
         ratings=ratings,
         prev_ratings=prev_ratings,
         diff_classes=diff_classes)
+
+@app.route('/dropped/')
+def dropped():
+    date_id, date = get_date()
+    return render_template('dropped.html',
+        date=date,
+        date_id=date_id)
+
+@app.route('/dropped/<date_id>/')
+def dropped_date(date_id):
+    date_id, date = get_date(date_id=date_id)
+    return render_template('dropped.html',
+        date=date,
+        date_id=date_id)
+
+@app.route('/dropped/<date_id>/batting')
+def dropped_batting(date_id):
+    date_id, date = get_date(date_id=date_id)
+
+    cur = g.db.cursor()
+    cur.execute('''
+        select
+          p.name, p.position, br.*,
+          br.contact + br.gap + br.power + br.eye + br.avoid_k as overall
+        from batting_ratings br
+        left join batting_ratings br_later
+          on br_later.player_id = br.player_id
+          and br_later.date_id > br.date_id
+          and br_later.date_id <= ?
+        join players p on br.player_id = p.id
+        join player_teams pt on br.player_id = pt.player_id
+        where pt.date_id = ?
+        and pt.team_id = 0
+        and br_later.player_id is null
+        order by overall desc
+        ''', [date_id, date_id])
+    rows = cur.fetchall()
+    return render_template('_dropped_batting.html',
+        rows=rows)
+
+@app.route('/dropped/<date_id>/pitching')
+def dropped_pitching(date_id):
+    date_id, date = get_date(date_id=date_id)
+
+    cur = g.db.cursor()
+    cur.execute('''
+        select
+          p.name, p.position, pr.*,
+          pr.stuff + pr.movement + pr.control as overall
+        from pitching_ratings pr
+        left join pitching_ratings pr_later
+          on pr_later.player_id = pr.player_id
+          and pr_later.date_id > pr.date_id
+          and pr_later.date_id <= ?
+        join players p on pr.player_id = p.id
+        join player_teams pt on pr.player_id = pt.player_id
+        where pt.date_id = ?
+        and pt.team_id = 0
+        and pr_later.player_id is null
+        order by overall desc
+        ''', [date_id, date_id])
+    rows = cur.fetchall()
+    return render_template('_dropped_pitching.html',
+        rows=rows)
 
 def get_date(date_id=None):
     sql = 'select * from dates '

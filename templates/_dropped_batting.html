@@ -1,0 +1,41 @@
+<table class="table ratings-table">
+  <thead>
+    <th>
+    <th colspan="5">CURRENT</th>
+    <th colspan="5">POTENTIAL</th>
+  </thead>
+  <tbody>
+    <tr class="subheader">
+      <td class="player-name">Player</td>
+      <td>CON</td>
+      <td>GAP</td>
+      <td>POW</td>
+      <td>EYE</td>
+      <td>K</td>
+      <td>CON</td>
+      <td>GAP</td>
+      <td>POW</td>
+      <td>EYE</td>
+      <td>K</td>
+    </tr>
+    {% for row in rows %}
+      <tr>
+        <td class="player-name">
+          <a href="/player/{{row.player_id}}">
+            {{row.position}} {{row.name}}
+          </a>
+        </td>
+        <td class="current">{{row.contact}}</td>
+        <td class="current">{{row.gap}}</td>
+        <td class="current">{{row.power}}</td>
+        <td class="current">{{row.eye}}</td>
+        <td class="current">{{row.avoid_k}}</td>
+        <td class="potential">{{row.pot_contact}}</td>
+        <td class="potential">{{row.pot_gap}}</td>
+        <td class="potential">{{row.pot_power}}</td>
+        <td class="potential">{{row.pot_eye}}</td>
+        <td class="potential">{{row.pot_avoid_k}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

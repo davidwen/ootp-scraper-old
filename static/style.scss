@@ -33,12 +33,10 @@
 #team-batting-ratings,
 #team-pitching-ratings,
 #improved-batting-ratings,
-#improved-pitching-ratings {
+#improved-pitching-ratings,
+#dropped-batting-ratings,
+#dropped-pitching-ratings {
     margin-bottom: 100px;
-
-    tr:nth-child(odd), table {
-        border-bottom: 2px solid black;
-    }
 
     .subheader td {
         font-weight: bold;
@@ -53,15 +51,25 @@
             text-align: left;
             vertical-align: middle;
         }
+    }
+}
 
-        &.increase {
-            color: blue;
-            text-decoration: underline;
-        }
+#team-batting-ratings,
+#team-pitching-ratings,
+#improved-batting-ratings,
+#improved-pitching-ratings {
+    tr:nth-child(odd), table {
+        border-bottom: 2px solid black;
+    }
 
-        &.decrease {
-            color: red;
-            text-decoration: underline;
-        }
+    
+    .increase {
+        color: blue;
+        text-decoration: underline;
+    }
+
+    .decrease {
+        color: red;
+        text-decoration: underline;
     }
 }

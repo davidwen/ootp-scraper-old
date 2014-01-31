@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Dropped Players{% endblock %}
+{% block content %}
+  <h1>Dropped Players</h1>
+  <div>{{date}}</div>
+
+  <h4>Dropped Batters</h4>
+  <div id="dropped-batting-ratings"></div>
+
+  <h4>Dropped Pitchers</h4>
+  <div id="dropped-pitching-ratings"></div>
+
+  <script>
+  $(function() {
+    $.get('/dropped/{{date_id}}/batting', function(html) {
+        $('#dropped-batting-ratings').html(html);
+      });
+    $.get('/dropped/{{date_id}}/pitching', function(html) {
+        $('#dropped-pitching-ratings').html(html);
+      });
+  });
+  </script>
+{% endblock %}
