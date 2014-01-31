@@ -20,14 +20,18 @@
 #improved-batting-ratings,
 #improved-pitching-ratings,
 #dropped-batting-ratings,
-#dropped-pitching-ratings {
+#dropped-pitching-ratings,
+#waivers-batting-ratings,
+#waivers-pitching-ratings {
   margin-bottom: 100px; }
   #team-batting-ratings .subheader td,
   #team-pitching-ratings .subheader td,
   #improved-batting-ratings .subheader td,
   #improved-pitching-ratings .subheader td,
   #dropped-batting-ratings .subheader td,
-  #dropped-pitching-ratings .subheader td {
+  #dropped-pitching-ratings .subheader td,
+  #waivers-batting-ratings .subheader td,
+  #waivers-pitching-ratings .subheader td {
     font-weight: bold;
     vertical-align: middle; }
   #team-batting-ratings td,
@@ -35,7 +39,9 @@
   #improved-batting-ratings td,
   #improved-pitching-ratings td,
   #dropped-batting-ratings td,
-  #dropped-pitching-ratings td {
+  #dropped-pitching-ratings td,
+  #waivers-batting-ratings td,
+  #waivers-pitching-ratings td {
     font-size: 11px; }
     #team-batting-ratings td.player-name, #team-batting-ratings td.ml-team-name,
     #team-pitching-ratings td.player-name,
@@ -47,7 +53,11 @@
     #dropped-batting-ratings td.player-name,
     #dropped-batting-ratings td.ml-team-name,
     #dropped-pitching-ratings td.player-name,
-    #dropped-pitching-ratings td.ml-team-name {
+    #dropped-pitching-ratings td.ml-team-name,
+    #waivers-batting-ratings td.player-name,
+    #waivers-batting-ratings td.ml-team-name,
+    #waivers-pitching-ratings td.player-name,
+    #waivers-pitching-ratings td.ml-team-name {
       font-size: 13px;
       text-align: left;
       vertical-align: middle; }

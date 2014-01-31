@@ -383,6 +383,68 @@ def dropped_pitching(date_id):
     return render_template('_dropped_pitching.html',
         rows=rows)
 
+@app.route('/waivers/')
+def waivers():
+    date_id, date = get_date()
+    return render_template('waivers.html',
+        date=date,
+        date_id=date_id)
+
+@app.route('/waivers/<date_id>/')
+def waivers_date(date_id):
+    date_id, date = get_date(date_id=date_id)
+    return render_template('waivers.html',
+        date=date,
+        date_id=date_id)
+
+@app.route('/waivers/<date_id>/batting')
+def waivers_batting(date_id):
+    date_id, date = get_date(date_id=date_id)
+
+    cur = g.db.cursor()
+    cur.execute('''
+        select
+          p.name, p.position, br.*,
+          br.contact + br.gap + br.power + br.eye + br.avoid_k as overall
+        from batting_ratings br
+        left join batting_ratings br_later
+          on br_later.player_id = br.player_id
+          and br_later.date_id > br.date_id
+          and br_later.date_id <= ?
+        join players p on br.player_id = p.id
+        join waiver_wire ww on ww.player_id = br.player_id
+        where ww.date_id = ?
+        and br_later.player_id is null
+        order by overall desc
+        ''', [date_id, date_id])
+    rows = cur.fetchall()
+    return render_template('_dropped_batting.html',
+        rows=rows)
+
+@app.route('/waivers/<date_id>/pitching')
+def waivers_pitching(date_id):
+    date_id, date = get_date(date_id=date_id)
+
+    cur = g.db.cursor()
+    cur.execute('''
+        select
+          p.name, p.position, pr.*,
+          pr.stuff + pr.movement + pr.control as overall
+        from pitching_ratings pr
+        left join pitching_ratings pr_later
+          on pr_later.player_id = pr.player_id
+          and pr_later.date_id > pr.date_id
+          and pr_later.date_id <= ?
+        join players p on pr.player_id = p.id
+        join waiver_wire ww on ww.player_id = pr.player_id
+        where ww.date_id = ?
+        and pr_later.player_id is null
+        order by overall desc
+        ''', [date_id, date_id])
+    rows = cur.fetchall()
+    return render_template('_dropped_pitching.html',
+        rows=rows)
+
 def get_date(date_id=None):
     sql = 'select * from dates '
     params = []

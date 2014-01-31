@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Waiver Wire{% endblock %}
+{% block content %}
+  <h1>Waiver Wire</h1>
+  <div>{{date}}</div>
+
+  <h4>Batters</h4>
+  <div id="waivers-batting-ratings"></div>
+
+  <h4>Pitchers</h4>
+  <div id="waivers-pitching-ratings"></div>
+
+  <script>
+  $(function() {
+    $.get('/waivers/{{date_id}}/batting', function(html) {
+        $('#waivers-batting-ratings').html(html);
+      });
+    $.get('/waivers/{{date_id}}/pitching', function(html) {
+        $('#waivers-pitching-ratings').html(html);
+      });
+  });
+  </script>
+{% endblock %}
