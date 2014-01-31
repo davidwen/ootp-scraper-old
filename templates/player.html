@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block title %}{{player.position}} {{player.name}}{% endblock %}
 {% block content %}
-  <div>{{player.name}}</div>
+  <h1>{{player.position}} {{player.name}}</h1>
   <div>{{player.birthday}}</div>
-  <div>{{player.position}}</div>
   <div id="pitching-ratings"></div>
   <div id="batting-ratings"></div>
   <script>

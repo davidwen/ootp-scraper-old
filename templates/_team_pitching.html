@@ -1,0 +1,74 @@
+<table class="table ratings-table">
+  <thead>
+    <th></th>
+    <th colspan="3">CURRENT</th>
+    <th colspan="3">CURRENT vs L</th>
+    <th colspan="3">CURRENT vs R</th>
+    <th colspan="3">POTENTIAL</th>
+    <th colspan="4">OTHER</th>
+  </thead>
+  <tbody>
+    <tr class="subheader">
+      <td>Player</td>
+      <td>STU</td>
+      <td>MOV</td>
+      <td>CON</td>
+      <td>STU</td>
+      <td>MOV</td>
+      <td>CON</td>
+      <td>STU</td>
+      <td>MOV</td>
+      <td>CON</td>
+      <td>STU</td>
+      <td>MOV</td>
+      <td>CON</td>
+      <td>STA</td>
+      <td>VEL</td>
+      <td>HOL</td>
+      <td>GB%</td>
+    </tr>
+    {% for id in ids %}
+      <tr>
+        <td rowspan="2" class="player-name">
+          <a href="/player/{{id}}">
+            {{ratings[id].position}} {{ratings[id].name}} ({{ratings[id].level}})</td>
+          </a>
+        </td>
+        <td class="current">{{prev_ratings[id].stuff}}</td>
+        <td class="current">{{prev_ratings[id].movement}}</td>
+        <td class="current">{{prev_ratings[id].control}}</td>
+        <td class="vs-l">{{prev_ratings[id].stuff_l}}</td>
+        <td class="vs-l">{{prev_ratings[id].movement_l}}</td>
+        <td class="vs-l">{{prev_ratings[id].control_l}}</td>
+        <td class="vs-r">{{prev_ratings[id].stuff_r}}</td>
+        <td class="vs-r">{{prev_ratings[id].movement_r}}</td>
+        <td class="vs-r">{{prev_ratings[id].control_r}}</td>
+        <td class="potential">{{prev_ratings[id].pot_stuff}}</td>
+        <td class="potential">{{prev_ratings[id].pot_movement}}</td>
+        <td class="potential">{{prev_ratings[id].pot_control}}</td>
+        <td class="other">{{prev_ratings[id].stamina}}</td>
+        <td class="other">{{prev_ratings[id].velocity}}</td>
+        <td class="other">{{prev_ratings[id].hold}}</td>
+        <td class="other">{{prev_ratings[id].groundball}}</td>
+      </tr>
+      <tr>
+        <td class="{{diff_classes[id].stuff}} current">{{ratings[id].stuff}}</td>
+        <td class="{{diff_classes[id].movement}} current">{{ratings[id].movement}}</td>
+        <td class="{{diff_classes[id].control}} current">{{ratings[id].control}}</td>
+        <td class="{{diff_classes[id].stuff_l}} vs-l">{{ratings[id].stuff_l}}</td>
+        <td class="{{diff_classes[id].movement_l}} vs-l">{{ratings[id].movement_l}}</td>
+        <td class="{{diff_classes[id].control_l}} vs-l">{{ratings[id].control_l}}</td>
+        <td class="{{diff_classes[id].stuff_r}} vs-r">{{ratings[id].stuff_r}}</td>
+        <td class="{{diff_classes[id].movement_r}} vs-r">{{ratings[id].movement_r}}</td>
+        <td class="{{diff_classes[id].control_r}} vs-r">{{ratings[id].control_r}}</td>
+        <td class="{{diff_classes[id].pot_stuff}} potential">{{ratings[id].pot_stuff}}</td>
+        <td class="{{diff_classes[id].pot_movement}} potential">{{ratings[id].pot_movement}}</td>
+        <td class="{{diff_classes[id].pot_control}} potential">{{ratings[id].pot_control}}</td>
+        <td class="{{diff_classes[id].stamina}} other">{{ratings[id].stamina}}</td>
+        <td class="{{diff_classes[id].velocity}} other">{{ratings[id].velocity}}</td>
+        <td class="{{diff_classes[id].hold}} other">{{ratings[id].hold}}</td>
+        <td class="{{diff_classes[id].groundball}} other">{{ratings[id].groundball}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

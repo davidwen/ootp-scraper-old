@@ -1,3 +1,4 @@
 *.db
 virtualenv
 .Python
+.sass-cache

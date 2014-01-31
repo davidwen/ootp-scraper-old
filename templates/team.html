@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 {% block title %}{{team.name}}{% endblock %}
 {% block content %}
-  <div>{{team.name}}</div>
-  <div>{{team.level}}</div>
+  <h1>{{team.name}} ({{team.level}})</h1>
   <div>{{date}}</div>
 
-  {% for pr in pitching_ratings %}
-    <div><a href="/player/{{pr.player_id}}">{{pr.position}} {{pr.name}} ({{pr.level}})</a></div>
-  {% endfor %}
+  <h4>Improved Batters</h4>
+  <div id="team-batting-ratings"></div>
 
-  {% for br in batting_ratings %}
-    <div><a href="/player/{{br.player_id}}">{{br.position}} {{br.name}} ({{br.level}})</a></div>
-  {% endfor %}
+  <h4>Improved Pitchers</h4>
+  <div id="team-pitching-ratings"></div>
+
   <script>
   $(function() {
+    $.get('batting', function(html) {
+        $('#team-batting-ratings').html(html);
+      });
+    $.get('pitching', function(html) {
+        $('#team-pitching-ratings').html(html);
+      });
   });
   </script>
 {% endblock %}

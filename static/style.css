@@ -1,0 +1,38 @@
+.ratings-table {
+  text-align: center; }
+  .ratings-table th {
+    text-align: center; }
+  .ratings-table .subheader {
+    background-color: #eee; }
+  .ratings-table .current {
+    background-color: #f8c573; }
+  .ratings-table .vs-l {
+    background-color: #8bc4ea; }
+  .ratings-table .vs-r {
+    background-color: #7ee2a8; }
+  .ratings-table .potential {
+    background-color: #f7dc6f; }
+  .ratings-table .other {
+    background-color: #df7c72; }
+
+#team-batting-ratings, #team-pitching-ratings {
+  margin-bottom: 100px; }
+  #team-batting-ratings tr:nth-child(odd), #team-batting-ratings table, #team-pitching-ratings tr:nth-child(odd), #team-pitching-ratings table {
+    border-bottom: 2px solid black; }
+  #team-batting-ratings .subheader td, #team-pitching-ratings .subheader td {
+    font-weight: bold;
+    vertical-align: middle; }
+    #team-batting-ratings .subheader td:first-child, #team-pitching-ratings .subheader td:first-child {
+      font-size: 14px; }
+  #team-batting-ratings td, #team-pitching-ratings td {
+    font-size: 11px; }
+    #team-batting-ratings td.player-name, #team-pitching-ratings td.player-name {
+      font-size: 13px;
+      text-align: left;
+      vertical-align: middle; }
+    #team-batting-ratings td.increase, #team-pitching-ratings td.increase {
+      color: blue;
+      text-decoration: underline; }
+    #team-batting-ratings td.decrease, #team-pitching-ratings td.decrease {
+      color: red;
+      text-decoration: underline; }

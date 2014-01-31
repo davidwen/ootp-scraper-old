@@ -1,0 +1,68 @@
+.ratings-table {
+    text-align: center;
+
+    th {
+        text-align: center;
+    }
+
+    .subheader {
+        background-color: #eee;
+    }
+
+    .current {
+        background-color: lighten(#f39c12, 20);
+    }
+
+    .vs-l {
+        background-color: lighten(#3498db, 20);
+    }
+
+    .vs-r {
+        background-color: lighten(#2ecc71, 20);
+    }
+
+    .potential {
+        background-color: lighten(#f1c40f, 20);
+    }
+
+    .other {
+        background-color: lighten(#c0392b, 20);
+    }
+}
+
+#team-batting-ratings, #team-pitching-ratings {
+    margin-bottom: 100px;
+
+    tr:nth-child(odd), table {
+        border-bottom: 2px solid black;
+    }
+
+    .subheader td {
+        font-weight: bold;
+        vertical-align: middle;
+
+        &:first-child {
+            font-size: 14px;
+        }        
+    }
+
+    td {
+        font-size: 11px;
+
+        &.player-name {
+            font-size: 13px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        &.increase {
+            color: blue;
+            text-decoration: underline;
+        }
+
+        &.decrease {
+            color: red;
+            text-decoration: underline;
+        }
+    }
+}

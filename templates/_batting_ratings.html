@@ -1,61 +1,59 @@
-<div>
-  <table>
-    <thead>
-      <th></th>
-      <th colspan="5">CURRENT</th>
-      <th colspan="5">CURRENT vs L</th>
-      <th colspan="5">CURRENT vs R</th>
-      <th colspan="5">POTENTIAL</th>
-    </thead>
-    <tbody>
+<table class="table ratings-table">
+  <thead>
+    <th></th>
+    <th colspan="5">CURRENT</th>
+    <th colspan="5">CURRENT vs L</th>
+    <th colspan="5">CURRENT vs R</th>
+    <th colspan="5">POTENTIAL</th>
+  </thead>
+  <tbody>
+    <tr class="subheader">
+      <td>Date</td>
+      <td>CON</td>
+      <td>GAP</td>
+      <td>POW</td>
+      <td>EYE</td>
+      <td>K</td>
+      <td>CON</td>
+      <td>GAP</td>
+      <td>POW</td>
+      <td>EYE</td>
+      <td>K</td>
+      <td>CON</td>
+      <td>GAP</td>
+      <td>POW</td>
+      <td>EYE</td>
+      <td>K</td>
+      <td>CON</td>
+      <td>GAP</td>
+      <td>POW</td>
+      <td>EYE</td>
+      <td>K</td>
+    </tr>
+    {% for row in rows %}
       <tr>
-        <td>Date</td>
-        <td>CON</td>
-        <td>GAP</td>
-        <td>POW</td>
-        <td>EYE</td>
-        <td>K</td>
-        <td>CON</td>
-        <td>GAP</td>
-        <td>POW</td>
-        <td>EYE</td>
-        <td>K</td>
-        <td>CON</td>
-        <td>GAP</td>
-        <td>POW</td>
-        <td>EYE</td>
-        <td>K</td>
-        <td>CON</td>
-        <td>GAP</td>
-        <td>POW</td>
-        <td>EYE</td>
-        <td>K</td>
+        <td>{{row.date}}</td>
+        <td class="current">{{row.contact}}</td>
+        <td class="current">{{row.gap}}</td>
+        <td class="current">{{row.power}}</td>
+        <td class="current">{{row.eye}}</td>
+        <td class="current">{{row.avoid_k}}</td>
+        <td class="vs-l">{{row.contact_l}}</td>
+        <td class="vs-l">{{row.gap_l}}</td>
+        <td class="vs-l">{{row.power_l}}</td>
+        <td class="vs-l">{{row.eye_l}}</td>
+        <td class="vs-l">{{row.avoid_k_l}}</td>
+        <td class="vs-r">{{row.contact_r}}</td>
+        <td class="vs-r">{{row.gap_r}}</td>
+        <td class="vs-r">{{row.power_r}}</td>
+        <td class="vs-r">{{row.eye_r}}</td>
+        <td class="vs-r">{{row.avoid_k_r}}</td>
+        <td class="potential">{{row.pot_contact}}</td>
+        <td class="potential">{{row.pot_gap}}</td>
+        <td class="potential">{{row.pot_power}}</td>
+        <td class="potential">{{row.pot_eye}}</td>
+        <td class="potential">{{row.pot_avoid_k}}</td>
       </tr>
-      {% for row in rows %}
-        <tr>
-          <td>{{row.date}}
-          <td>{{row.contact}}</td>
-          <td>{{row.gap}}</td>
-          <td>{{row.power}}</td>
-          <td>{{row.eye}}</td>
-          <td>{{row.avoid_k}}</td>
-          <td>{{row.contact_l}}</td>
-          <td>{{row.gap_l}}</td>
-          <td>{{row.power_l}}</td>
-          <td>{{row.eye_l}}</td>
-          <td>{{row.avoid_k_l}}</td>
-          <td>{{row.contact_r}}</td>
-          <td>{{row.gap_r}}</td>
-          <td>{{row.power_r}}</td>
-          <td>{{row.eye_r}}</td>
-          <td>{{row.avoid_k_r}}</td>
-          <td>{{row.pot_contact}}</td>
-          <td>{{row.pot_gap}}</td>
-          <td>{{row.pot_power}}</td>
-          <td>{{row.pot_eye}}</td>
-          <td>{{row.pot_avoid_k}}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+    {% endfor %}
+  </tbody>
+</table>
