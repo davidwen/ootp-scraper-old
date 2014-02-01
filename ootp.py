@@ -72,12 +72,22 @@ def team(team_id):
     date_id, date = get_date()
     return render_template('team.html',
         team=team,
-        date=date)
+        date=date,
+        date_id=date_id)
 
+@app.route('/team/<team_id>/<date_id>')
+def team_date(team_id, date_id):
+    cur = g.db.cursor()
+    cur.execute('select * from teams where id = ?', [team_id])
+    team = cur.fetchone()
+    date_id, date = get_date(date_id=date_id)
+    return render_template('team.html',
+        team=team,
+        date=date,
+        date_id=date_id)
 
-
-@app.route('/team/<team_id>/batting')
-def team_batting(team_id):
+@app.route('/team/<team_id>/<date_id>/batting')
+def team_batting(team_id, date_id):
     sql = '''
         select p.name, p.position, br.*, t.level
         from batting_ratings br
@@ -95,14 +105,15 @@ def team_batting(team_id):
         left join batting_ratings br_later
           on br_later.player_id = br.player_id
           and br_later.date_id >= br.date_id
+          and br_later.date_id <= ?
         where br.player_id in ({seq})
         group by br.player_id, br.date_id
         having position = 2
         '''
-    return team_bp(team_id, sql, prev_sql, '_team_batting.html')
+    return team_bp(team_id, date_id, sql, prev_sql, '_team_batting.html')
 
-@app.route('/team/<team_id>/pitching')
-def team_pitchers(team_id):
+@app.route('/team/<team_id>/<date_id>/pitching')
+def team_pitchers(team_id, date_id):
     sql = '''
         select p.name, p.position, pr.*, t.level
         from pitching_ratings pr
@@ -120,15 +131,16 @@ def team_pitchers(team_id):
         left join pitching_ratings pr_later
           on pr_later.player_id = pr.player_id
           and pr_later.date_id >= pr.date_id
+          and pr_later.date_id <= ?
         where pr.player_id in ({seq})
         group by pr.player_id, pr.date_id
         having position = 2
         '''
-    return team_bp(team_id, sql, prev_sql, '_team_pitching.html')
+    return team_bp(team_id, date_id, sql, prev_sql, '_team_pitching.html')
 
-def team_bp(team_id, sql, prev_sql, template):
+def team_bp(team_id, date_id, sql, prev_sql, template):
     cur = g.db.cursor()
-    date_id, date = get_date()
+    date_id, date = get_date(date_id=date_id)
 
     cur.execute(sql, [date_id, team_id, team_id])
     rows = cur.fetchall()
@@ -140,7 +152,7 @@ def team_bp(team_id, sql, prev_sql, template):
         ids.append(player_id)
 
     prev_sql = prev_sql.format(seq=','.join(['?']*len(ratings)))
-    cur.execute(prev_sql, ratings.keys())
+    cur.execute(prev_sql, [date_id] + ratings.keys())
     prev_rows = cur.fetchall()
     prev_ratings = {}
     diff_classes = {}

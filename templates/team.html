@@ -12,10 +12,10 @@
 
   <script>
   $(function() {
-    $.get('batting', function(html) {
+    $.get('/team/{{team.id}}/{{date_id}}/batting', function(html) {
         $('#team-batting-ratings').html(html);
       });
-    $.get('pitching', function(html) {
+    $.get('/team/{{team.id}}/{{date_id}}/pitching', function(html) {
         $('#team-pitching-ratings').html(html);
       });
   });
