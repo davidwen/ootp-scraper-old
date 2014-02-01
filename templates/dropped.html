@@ -1,13 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Dropped Players{% endblock %}
+{% set title = 'Dropped Players' %}
+{% set active = 'dropped' %}
 {% block content %}
-  <h1>Dropped Players</h1>
-  <h3>{{date}}</h3><br>
-
-  <h4>Dropped Batters</h4>
   <div id="dropped-batting-ratings"></div>
-
-  <h4>Dropped Pitchers</h4>
   <div id="dropped-pitching-ratings"></div>
 
   <script>

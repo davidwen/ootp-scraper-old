@@ -1,13 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Global Improvers{% endblock %}
+{% set title = 'Global Improvers' %}
+{% set active = 'improvers' %}
 {% block content %}
-  <h1>Global Improvers</h1>
-  <h3>{{date}}</h3><br>
-
-  <h4>Improved Batters</h4>
   <div id="improved-batting-ratings"></div>
-
-  <h4>Improved Pitchers</h4>
   <div id="improved-pitching-ratings"></div>
 
   <script>

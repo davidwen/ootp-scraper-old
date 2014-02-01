@@ -1,8 +1,6 @@
 import sqlite3
-import time
-import json
 from contextlib import closing
-from flask import Flask, request, g, jsonify, render_template
+from flask import Flask, request, g, render_template, redirect, url_for
 
 app = Flask(__name__)
 
@@ -71,16 +69,10 @@ def pitching_ratings(player_id):
 
 @app.route('/team/<team_id>/')
 def team(team_id):
-    cur = g.db.cursor()
-    cur.execute('select * from teams where id = ?', [team_id])
-    team = cur.fetchone()
     date_id, date = get_date()
-    return render_template('team.html',
-        team=team,
-        date=date,
-        date_id=date_id)
+    return redirect(url_for('team_date', team_id=team_id, date_id=date_id))
 
-@app.route('/team/<team_id>/<date_id>')
+@app.route('/team/<team_id>/date/<date_id>')
 def team_date(team_id, date_id):
     cur = g.db.cursor()
     cur.execute('select * from teams where id = ?', [team_id])
@@ -91,7 +83,7 @@ def team_date(team_id, date_id):
         date=date,
         date_id=date_id)
 
-@app.route('/team/<team_id>/<date_id>/batting')
+@app.route('/team/<team_id>/date/<date_id>/batting')
 def team_batting(team_id, date_id):
     sql = '''
         select p.name, p.position, p.birthday, br.*, t.level
@@ -117,7 +109,7 @@ def team_batting(team_id, date_id):
         '''
     return team_bp(team_id, date_id, sql, prev_sql, '_team_batting.html')
 
-@app.route('/team/<team_id>/<date_id>/pitching')
+@app.route('/team/<team_id>/date/<date_id>/pitching')
 def team_pitchers(team_id, date_id):
     sql = '''
         select p.name, p.position, p.birthday, pr.*, t.level
@@ -182,11 +174,9 @@ def team_bp(team_id, date_id, sql, prev_sql, template):
 @app.route('/improvers/')
 def improvers():
     date_id, date = get_date()
-    return render_template('improvers.html',
-        date=date,
-        date_id=date_id)
+    return redirect(url_for('improvers_date', date_id=date_id))
 
-@app.route('/improvers/<date_id>/')
+@app.route('/improvers/<date_id>')
 def improvers_date(date_id):
     date_id, date = get_date(date_id=date_id)
     return render_template('improvers.html',
@@ -291,11 +281,9 @@ def improved_bp(date_id, sql, prev_sql, template):
 @app.route('/dropped/')
 def dropped():
     date_id, date = get_date()
-    return render_template('dropped.html',
-        date=date,
-        date_id=date_id)
+    return redirect(url_for('dropped_date', date_id=date_id))
 
-@app.route('/dropped/<date_id>/')
+@app.route('/dropped/<date_id>')
 def dropped_date(date_id):
     date_id, date = get_date(date_id=date_id)
     return render_template('dropped.html',
@@ -359,11 +347,9 @@ def dropped_pitching(date_id):
 @app.route('/waivers/')
 def waivers():
     date_id, date = get_date()
-    return render_template('waivers.html',
-        date=date,
-        date_id=date_id)
+    return redirect(url_for('waivers_date', date_id=date_id))
 
-@app.route('/waivers/<date_id>/')
+@app.route('/waivers/<date_id>')
 def waivers_date(date_id):
     date_id, date = get_date(date_id=date_id)
     return render_template('waivers.html',

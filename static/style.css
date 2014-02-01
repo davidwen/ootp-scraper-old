@@ -1,6 +1,29 @@
 body {
   padding-top: 70px; }
 
+.navbar-center {
+  position: absolute;
+  left: 25%;
+  width: 50%;
+  right: 25%;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: bold; }
+
+.navbar-date li > a {
+  padding: 15px 5px; }
+.navbar-date .glyphicon {
+  font-size: 10px; }
+.navbar-date .date {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  padding: 15px 0;
+  position: relative; }
+
 .ratings-table {
   text-align: center; }
   .ratings-table th {

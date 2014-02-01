@@ -1,21 +1,17 @@
 {% extends "base.html" %}
-{% block title %}{{team.name}}{% endblock %}
+{% set title = team.name %}
+{% set active = 'team' %}
 {% block content %}
-  <h1>{{team.name}} ({{team.level}})</h1>
-  <h3>{{date}}</h3><br>
-
-  <h4>Batters</h4>
+  <h1>{{team.name}} ({{team.level}})</h1><br>
   <div id="team-batting-ratings"></div>
-
-  <h4>Pitchers</h4>
   <div id="team-pitching-ratings"></div>
 
   <script>
   $(function() {
-    $.get('/team/{{team.id}}/{{date_id}}/batting', function(html) {
+    $.get('/team/{{team.id}}/date/{{date_id}}/batting', function(html) {
         $('#team-batting-ratings').html(html);
       });
-    $.get('/team/{{team.id}}/{{date_id}}/pitching', function(html) {
+    $.get('/team/{{team.id}}/date/{{date_id}}/pitching', function(html) {
         $('#team-pitching-ratings').html(html);
       });
   });

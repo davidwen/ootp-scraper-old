@@ -1,13 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Waiver Wire{% endblock %}
+{% set title = 'Waiver Wire' %}
+{% set active = 'waivers' %}
 {% block content %}
-  <h1>Waiver Wire</h1>
-  <h3>{{date}}</h3><br>
-
-  <h4>Batters</h4>
   <div id="waivers-batting-ratings"></div>
-
-  <h4>Pitchers</h4>
   <div id="waivers-pitching-ratings"></div>
 
   <script>
