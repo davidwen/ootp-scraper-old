@@ -67,24 +67,18 @@ def pitching_ratings(player_id):
 @app.route('/team/<team_id>/')
 def team(team_id):
     cur = g.db.cursor()
-
-    cur.execute('''
-        select * from teams where id = ?
-        ''', [team_id])
+    cur.execute('select * from teams where id = ?', [team_id])
     team = cur.fetchone()
-
     date_id, date = get_date()
-
     return render_template('team.html',
         team=team,
         date=date)
 
+
+
 @app.route('/team/<team_id>/batting')
 def team_batting(team_id):
-    cur = g.db.cursor()
-    date_id, date = get_date()
-
-    cur.execute('''
+    sql = '''
         select p.name, p.position, br.*, t.level
         from batting_ratings br
         join players p on br.player_id = p.id
@@ -94,16 +88,8 @@ def team_batting(team_id):
         and (t.id = ? or t.parent_id = ?)
         group by br.player_id
         order by level desc
-        ''', [date_id, team_id, team_id])
-    rows = cur.fetchall()
-    ratings = {}
-    ids = []
-    for row in rows:
-        player_id = row['player_id']
-        ratings[player_id] = row
-        ids.append(player_id)
-
-    sql = '''
+        '''
+    prev_sql = '''
         select br.*, count(*) as position
         from batting_ratings br
         left join batting_ratings br_later
@@ -112,33 +98,12 @@ def team_batting(team_id):
         where br.player_id in ({seq})
         group by br.player_id, br.date_id
         having position = 2
-        '''.format(seq=','.join(['?']*len(ratings)))
-    cur.execute(sql, ratings.keys())
-    prev_rows = cur.fetchall()
-    prev_ratings = {}
-    diff_classes = {}
-    for row in prev_rows:
-        player_id = row['player_id']
-        prev_ratings[player_id] = row
-        diff_classes[player_id] = {}
-        for key in row.keys():
-            if row[key] < ratings[player_id][key]:
-                diff_classes[player_id][key] = 'increase'
-            elif row[key] > ratings[player_id][key]:
-                diff_classes[player_id][key] = 'decrease'
-
-    return render_template('_team_batting.html',
-        ids=ids,
-        ratings=ratings,
-        prev_ratings=prev_ratings,
-        diff_classes=diff_classes)
+        '''
+    return team_bp(team_id, sql, prev_sql, '_team_batting.html')
 
 @app.route('/team/<team_id>/pitching')
 def team_pitchers(team_id):
-    cur = g.db.cursor()
-    date_id, date = get_date()
-
-    cur.execute('''
+    sql = '''
         select p.name, p.position, pr.*, t.level
         from pitching_ratings pr
         join players p on pr.player_id = p.id
@@ -148,16 +113,8 @@ def team_pitchers(team_id):
         and (t.id = ? or t.parent_id = ?)
         group by pr.player_id
         order by level desc
-        ''', [date_id, team_id, team_id])
-    rows = cur.fetchall()
-    ratings = {}
-    ids = []
-    for row in rows:
-        player_id = row['player_id']
-        ratings[player_id] = row
-        ids.append(player_id)
-
-    sql = '''
+        '''
+    prev_sql = '''
         select pr.*, count(*) as position
         from pitching_ratings pr
         left join pitching_ratings pr_later
@@ -166,8 +123,24 @@ def team_pitchers(team_id):
         where pr.player_id in ({seq})
         group by pr.player_id, pr.date_id
         having position = 2
-        '''.format(seq=','.join(['?']*len(ratings)))
-    cur.execute(sql, ratings.keys())
+        '''
+    return team_bp(team_id, sql, prev_sql, '_team_pitching.html')
+
+def team_bp(team_id, sql, prev_sql, template):
+    cur = g.db.cursor()
+    date_id, date = get_date()
+
+    cur.execute(sql, [date_id, team_id, team_id])
+    rows = cur.fetchall()
+    ratings = {}
+    ids = []
+    for row in rows:
+        player_id = row['player_id']
+        ratings[player_id] = row
+        ids.append(player_id)
+
+    prev_sql = prev_sql.format(seq=','.join(['?']*len(ratings)))
+    cur.execute(prev_sql, ratings.keys())
     prev_rows = cur.fetchall()
     prev_ratings = {}
     diff_classes = {}
@@ -181,7 +154,7 @@ def team_pitchers(team_id):
             elif row[key] > ratings[player_id][key]:
                 diff_classes[player_id][key] = 'decrease'
 
-    return render_template('_team_pitching.html',
+    return render_template(template,
         ids=ids,
         ratings=ratings,
         prev_ratings=prev_ratings,
@@ -203,10 +176,7 @@ def improvers_date(date_id):
 
 @app.route('/improvers/<date_id>/batting')
 def improved_batting(date_id):
-    date_id, date = get_date(date_id=date_id)
-
-    cur = g.db.cursor()
-    cur.execute('''
+    sql = '''
         select
           p.name, p.position, t.level, parent_team.name as ml_team, br.*,
           br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential
@@ -216,17 +186,10 @@ def improved_batting(date_id):
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where br.date_id = ?
+        group by br.player_id
         order by potential desc
-        ''', [date_id])
-    rows = cur.fetchall()
-    ratings = {}
-    ids = []
-    for row in rows:
-        player_id = row['player_id']
-        ratings[player_id] = row
-        ids.append(player_id)
-
-    sql = '''
+        '''
+    prev_sql = '''
         select br.*, br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential, count(*) as position
         from batting_ratings br
         left join batting_ratings br_later
@@ -236,37 +199,12 @@ def improved_batting(date_id):
         and br.date_id <= ?
         group by br.player_id, br.date_id
         having position = 2
-        '''.format(seq=','.join(['?']*len(ratings)))
-    cur.execute(sql, ratings.keys() + [date_id])
-    prev_rows = cur.fetchall()
-    prev_ratings = {}
-    diff_classes = {}
-    for row in prev_rows:
-        player_id = row['player_id']
-        rating = ratings[player_id]
-        if rating['potential'] > row['potential']:
-            prev_ratings[player_id] = row
-            diff_classes[player_id] = {}
-            for key in row.keys():
-                if row[key] < ratings[player_id][key]:
-                    diff_classes[player_id][key] = 'increase'
-                elif row[key] > ratings[player_id][key]:
-                    diff_classes[player_id][key] = 'decrease'
-        else:
-            del ratings[player_id]
-    ids = [id for id in ids if id in ratings]
-    return render_template('_improvers_batting.html',
-        ids=ids,
-        ratings=ratings,
-        prev_ratings=prev_ratings,
-        diff_classes=diff_classes)
+        '''
+    return improved_bp(date_id, sql, prev_sql, '_improvers_batting.html')
 
 @app.route('/improvers/<date_id>/pitching')
 def improved_pitching(date_id):
-    date_id, date = get_date(date_id=date_id)
-
-    cur = g.db.cursor()
-    cur.execute('''
+    sql = '''
         select
           p.name, p.position, t.level, parent_team.name as ml_team, pr.*,
           pr.pot_stuff + pr.pot_movement + pr.pot_control as potential
@@ -276,17 +214,10 @@ def improved_pitching(date_id):
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where pr.date_id = ?
+        group by pr.player_id
         order by potential desc
-        ''', [date_id])
-    rows = cur.fetchall()
-    ratings = {}
-    ids = []
-    for row in rows:
-        player_id = row['player_id']
-        ratings[player_id] = row
-        ids.append(player_id)
-
-    sql = '''
+        '''
+    prev_sql = '''
         select pr.*, pr.pot_stuff + pr.pot_movement + pr.pot_control as potential, count(*) as position
         from pitching_ratings pr
         left join pitching_ratings pr_later
@@ -296,8 +227,23 @@ def improved_pitching(date_id):
         and pr.date_id <= ?
         group by pr.player_id, pr.date_id
         having position = 2
-        '''.format(seq=','.join(['?']*len(ratings)))
-    cur.execute(sql, ratings.keys() + [date_id])
+        '''
+    return improved_bp(date_id, sql, prev_sql, '_improvers_pitching.html')
+
+def improved_bp(date_id, sql, prev_sql, template):
+    date_id, date = get_date(date_id=date_id)
+    cur = g.db.cursor()
+    cur.execute(sql, [date_id])
+    rows = cur.fetchall()
+    ratings = {}
+    ids = []
+    for row in rows:
+        player_id = row['player_id']
+        ratings[player_id] = row
+        ids.append(player_id)
+
+    prev_sql = prev_sql.format(seq=','.join(['?']*len(ratings)))
+    cur.execute(prev_sql, ratings.keys() + [date_id])
     prev_rows = cur.fetchall()
     prev_ratings = {}
     diff_classes = {}
@@ -315,7 +261,7 @@ def improved_pitching(date_id):
         else:
             del ratings[player_id]
     ids = [id for id in ids if id in ratings]
-    return render_template('_improvers_pitching.html',
+    return render_template(template,
         ids=ids,
         ratings=ratings,
         prev_ratings=prev_ratings,
