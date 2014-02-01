@@ -92,6 +92,7 @@ def team_batting(team_id):
         join teams t on t.id = pt.team_id
         where br.date_id = ?
         and (t.id = ? or t.parent_id = ?)
+        group by br.player_id
         order by level desc
         ''', [date_id, team_id, team_id])
     rows = cur.fetchall()
@@ -145,6 +146,7 @@ def team_pitchers(team_id):
         join teams t on t.id = pt.team_id
         where pr.date_id = ?
         and (t.id = ? or t.parent_id = ?)
+        group by pr.player_id
         order by level desc
         ''', [date_id, team_id, team_id])
     rows = cur.fetchall()
