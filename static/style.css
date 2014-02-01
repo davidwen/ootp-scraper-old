@@ -50,7 +50,7 @@ input[type="number"] {
 #dropped-pitching-ratings,
 #waivers-batting-ratings,
 #waivers-pitching-ratings {
-  margin-bottom: 100px; }
+  margin-bottom: 50px; }
   #team-batting-ratings .subheader td,
   #team-pitching-ratings .subheader td,
   #improved-batting-ratings .subheader td,
