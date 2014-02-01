@@ -1,5 +1,9 @@
 body {
+  background-color: #eee;
   padding-top: 70px; }
+
+a {
+  color: #333; }
 
 input[type="number"] {
   width: 50px !important; }
@@ -8,6 +12,7 @@ input[type="number"] {
   display: inline-block !important; }
 
 .navbar-center {
+  color: #eee;
   position: absolute;
   left: 25%;
   width: 50%;
@@ -15,22 +20,20 @@ input[type="number"] {
   text-align: center;
   padding: 15px 0;
   font-size: 20px;
-  line-height: 20px;
-  font-weight: bold; }
+  line-height: 20px; }
 
 .navbar-date .glyphicon {
   font-size: 12px; }
 .navbar-date .date {
-  color: #000;
-  font-size: 14px;
-  font-weight: 500; }
+  color: #eee;
+  font-size: 14px; }
 
 .ratings-table {
   text-align: center; }
   .ratings-table th {
     text-align: center; }
   .ratings-table .subheader {
-    background-color: #eee; }
+    background-color: #ddd; }
   .ratings-table .current {
     background-color: #f8c573; }
   .ratings-table .vs-l {
