@@ -7,6 +7,7 @@ from flask import Flask, request, g, jsonify, render_template
 app = Flask(__name__)
 
 DATABASE = 'wbh.db'
+ROOT = 'http://worldbaseballhierarchy.com/lgreports/news/html/'
 
 def connect_db():
     db = sqlite3.connect(DATABASE)
@@ -28,13 +29,17 @@ def error(reason, code=400):
 @app.route('/player/<player_id>/')
 def player(player_id):
     cur = g.db.cursor()
-
     cur.execute('''
         select * from players where id = ?
         ''', [player_id])
     player = cur.fetchone()
+    href = ROOT + 'players/player_' + str(player_id) + '.html'
+    date_id, date = get_date()
+    age = get_age(player['birthday'], date)
     return render_template('player.html',
-        player=player)
+        player=player,
+        href=href,
+        age=age)
 
 @app.route('/player/<player_id>/batting')
 def batting_ratings(player_id):
@@ -89,7 +94,7 @@ def team_date(team_id, date_id):
 @app.route('/team/<team_id>/<date_id>/batting')
 def team_batting(team_id, date_id):
     sql = '''
-        select p.name, p.position, br.*, t.level
+        select p.name, p.position, p.birthday, br.*, t.level
         from batting_ratings br
         join players p on br.player_id = p.id
         join player_teams pt on br.player_id = pt.player_id
@@ -115,7 +120,7 @@ def team_batting(team_id, date_id):
 @app.route('/team/<team_id>/<date_id>/pitching')
 def team_pitchers(team_id, date_id):
     sql = '''
-        select p.name, p.position, pr.*, t.level
+        select p.name, p.position, p.birthday, pr.*, t.level
         from pitching_ratings pr
         join players p on pr.player_id = p.id
         join player_teams pt on pr.player_id = pt.player_id
@@ -165,12 +170,14 @@ def team_bp(team_id, date_id, sql, prev_sql, template):
                 diff_classes[player_id][key] = 'increase'
             elif row[key] > ratings[player_id][key]:
                 diff_classes[player_id][key] = 'decrease'
+    ages = get_ages(ratings, date)
 
     return render_template(template,
         ids=ids,
         ratings=ratings,
         prev_ratings=prev_ratings,
-        diff_classes=diff_classes)
+        diff_classes=diff_classes,
+        ages=ages)
 
 @app.route('/improvers/')
 def improvers():
@@ -190,7 +197,7 @@ def improvers_date(date_id):
 def improved_batting(date_id):
     sql = '''
         select
-          p.name, p.position, t.level, parent_team.name as ml_team, br.*,
+          p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, br.*,
           br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential
         from batting_ratings br
         join players p on br.player_id = p.id
@@ -218,7 +225,7 @@ def improved_batting(date_id):
 def improved_pitching(date_id):
     sql = '''
         select
-          p.name, p.position, t.level, parent_team.name as ml_team, pr.*,
+          p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, pr.*,
           pr.pot_stuff + pr.pot_movement + pr.pot_control as potential
         from pitching_ratings pr
         join players p on pr.player_id = p.id
@@ -272,12 +279,14 @@ def improved_bp(date_id, sql, prev_sql, template):
                     diff_classes[player_id][key] = 'decrease'
         else:
             del ratings[player_id]
+    ages = get_ages(ratings, date)
     ids = [id for id in ids if id in ratings]
     return render_template(template,
         ids=ids,
         ratings=ratings,
         prev_ratings=prev_ratings,
-        diff_classes=diff_classes)
+        diff_classes=diff_classes,
+        ages=ages)
 
 @app.route('/dropped/')
 def dropped():
@@ -300,7 +309,7 @@ def dropped_batting(date_id):
     cur = g.db.cursor()
     cur.execute('''
         select
-          p.name, p.position, br.*,
+          p.name, p.position, p.birthday, br.*,
           br.contact + br.gap + br.power + br.eye + br.avoid_k as overall
         from batting_ratings br
         left join batting_ratings br_later
@@ -315,8 +324,10 @@ def dropped_batting(date_id):
         order by overall desc
         ''', [date_id, date_id])
     rows = cur.fetchall()
+    ages = get_ages_from_rows(rows, date)
     return render_template('_dropped_batting.html',
-        rows=rows)
+        rows=rows,
+        ages=ages)
 
 @app.route('/dropped/<date_id>/pitching')
 def dropped_pitching(date_id):
@@ -325,7 +336,7 @@ def dropped_pitching(date_id):
     cur = g.db.cursor()
     cur.execute('''
         select
-          p.name, p.position, pr.*,
+          p.name, p.position, p.birthday, pr.*,
           pr.stuff + pr.movement + pr.control as overall
         from pitching_ratings pr
         left join pitching_ratings pr_later
@@ -340,8 +351,10 @@ def dropped_pitching(date_id):
         order by overall desc
         ''', [date_id, date_id])
     rows = cur.fetchall()
+    ages = get_ages_from_rows(rows, date)
     return render_template('_dropped_pitching.html',
-        rows=rows)
+        rows=rows,
+        ages=ages)
 
 @app.route('/waivers/')
 def waivers():
@@ -364,7 +377,7 @@ def waivers_batting(date_id):
     cur = g.db.cursor()
     cur.execute('''
         select
-          p.name, p.position, br.*,
+          p.name, p.position, p.birthday, br.*,
           br.contact + br.gap + br.power + br.eye + br.avoid_k as overall
         from batting_ratings br
         left join batting_ratings br_later
@@ -378,8 +391,10 @@ def waivers_batting(date_id):
         order by overall desc
         ''', [date_id, date_id])
     rows = cur.fetchall()
+    ages = get_ages_from_rows(rows, date)
     return render_template('_dropped_batting.html',
-        rows=rows)
+        rows=rows,
+        ages=ages)
 
 @app.route('/waivers/<date_id>/pitching')
 def waivers_pitching(date_id):
@@ -388,7 +403,7 @@ def waivers_pitching(date_id):
     cur = g.db.cursor()
     cur.execute('''
         select
-          p.name, p.position, pr.*,
+          p.name, p.position, p.birthday, pr.*,
           pr.stuff + pr.movement + pr.control as overall
         from pitching_ratings pr
         left join pitching_ratings pr_later
@@ -402,8 +417,10 @@ def waivers_pitching(date_id):
         order by overall desc
         ''', [date_id, date_id])
     rows = cur.fetchall()
+    ages = get_ages_from_rows(rows, date)
     return render_template('_dropped_pitching.html',
-        rows=rows)
+        rows=rows,
+        ages=ages)
 
 def get_date(date_id=None):
     sql = 'select * from dates '
@@ -419,6 +436,23 @@ def get_date(date_id=None):
     date_id = date_row['id']
     date = date_row['date']
     return (date_id, date)
+
+def get_age(birthday, date):
+    birth_year = int(birthday[:birthday.find('-')])
+    year = int(date[:date.find('-')])
+    return year - birth_year
+
+def get_ages(players, date):
+    result = {}
+    for player_id in players:
+        result[player_id] = get_age(players[player_id]['birthday'], date)
+    return result
+
+def get_ages_from_rows(rows, date):
+    result = {}
+    for row in rows:
+        result[row['player_id']] = get_age(row['birthday'], date)
+    return result
 
 if __name__ == '__main__':
     app.run(debug=True)

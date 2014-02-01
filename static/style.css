@@ -43,21 +43,28 @@
   #waivers-batting-ratings td,
   #waivers-pitching-ratings td {
     font-size: 11px; }
-    #team-batting-ratings td.player-name, #team-batting-ratings td.ml-team-name,
+    #team-batting-ratings td.player-name, #team-batting-ratings td.ml-team-name, #team-batting-ratings td.player-age,
     #team-pitching-ratings td.player-name,
     #team-pitching-ratings td.ml-team-name,
+    #team-pitching-ratings td.player-age,
     #improved-batting-ratings td.player-name,
     #improved-batting-ratings td.ml-team-name,
+    #improved-batting-ratings td.player-age,
     #improved-pitching-ratings td.player-name,
     #improved-pitching-ratings td.ml-team-name,
+    #improved-pitching-ratings td.player-age,
     #dropped-batting-ratings td.player-name,
     #dropped-batting-ratings td.ml-team-name,
+    #dropped-batting-ratings td.player-age,
     #dropped-pitching-ratings td.player-name,
     #dropped-pitching-ratings td.ml-team-name,
+    #dropped-pitching-ratings td.player-age,
     #waivers-batting-ratings td.player-name,
     #waivers-batting-ratings td.ml-team-name,
+    #waivers-batting-ratings td.player-age,
     #waivers-pitching-ratings td.player-name,
-    #waivers-pitching-ratings td.ml-team-name {
+    #waivers-pitching-ratings td.ml-team-name,
+    #waivers-pitching-ratings td.player-age {
       font-size: 13px;
       text-align: left;
       vertical-align: middle; }

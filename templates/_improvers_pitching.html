@@ -9,6 +9,7 @@
   <tbody>
     <tr class="subheader">
       <td class="player-name">Player</td>
+      <td class="player-age">Age</td>
       <td class="ml-team-name">ML Team</td>
       <td>STU</td>
       <td>MOV</td>
@@ -28,6 +29,7 @@
             {{ratings[id].position}} {{ratings[id].name}} ({{ratings[id].level}})</td>
           </a>
         </td>
+        <td rowspan="2" class="player-age">{{ages[id]}}</td>
         <td rowspan="2" class="ml-team-name">{{ratings[id].ml_team}}</td>
         <td class="current">{{prev_ratings[id].stuff}}</td>
         <td class="current">{{prev_ratings[id].movement}}</td>
