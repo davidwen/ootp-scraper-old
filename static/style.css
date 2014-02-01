@@ -1,6 +1,9 @@
 body {
   padding-top: 70px; }
 
+.nav > li {
+  display: inline-block !important; }
+
 .navbar-center {
   position: absolute;
   left: 25%;
@@ -12,17 +15,12 @@ body {
   line-height: 20px;
   font-weight: bold; }
 
-.navbar-date li > a {
-  padding: 15px 5px; }
 .navbar-date .glyphicon {
-  font-size: 10px; }
+  font-size: 12px; }
 .navbar-date .date {
-  display: block;
+  color: #000;
   font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  padding: 15px 0;
-  position: relative; }
+  font-weight: 500; }
 
 .ratings-table {
   text-align: center; }
