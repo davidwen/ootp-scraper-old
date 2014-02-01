@@ -2,17 +2,41 @@
 {% set title = 'Global Improvers' %}
 {% set active = 'improvers' %}
 {% block content %}
+  <form id="max-age-form" class="form-inline" role="form">
+    <div class="form-group">
+      <label for="max-age">Max age:</label>
+      <input type="number" class="form-control input-sm" id="max-age">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
   <div id="improved-batting-ratings"></div>
   <div id="improved-pitching-ratings"></div>
 
   <script>
   $(function() {
-    $.get('/improvers/{{date_id}}/batting', function(html) {
-        $('#improved-batting-ratings').html(html);
+    var battingUrl = '/improvers/{{date_id}}/batting';
+    var pitchingUrl = '/improvers/{{date_id}}/pitching'
+    $('#max-age-form').submit(function() {
+      var maxAge = $(this).find('input').val();
+      if (!maxAge) maxAge = 99;
+      $.ajax({
+        type: 'GET',
+        url: battingUrl,
+        data: {maxage: maxAge},
+        success: function(html) {
+          $('#improved-batting-ratings').html(html);
+        }
       });
-    $.get('/improvers/{{date_id}}/pitching', function(html) {
-        $('#improved-pitching-ratings').html(html);
+      $.ajax({
+        type: 'GET',
+        url: pitchingUrl,
+        data: {maxage: maxAge},
+        success: function(html) {
+          $('#improved-pitching-ratings').html(html);
+        }
       });
+      return false;
+    }).submit();
   });
   </script>
 {% endblock %}

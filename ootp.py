@@ -1,6 +1,6 @@
 import sqlite3
 from contextlib import closing
-from flask import Flask, request, g, render_template, redirect, url_for
+from flask import Flask, request, g, render_template, redirect, url_for, request
 
 app = Flask(__name__)
 
@@ -185,6 +185,7 @@ def improvers_date(date_id):
 
 @app.route('/improvers/<date_id>/batting')
 def improved_batting(date_id):
+    max_age = int(request.args.get('maxage', '99'))
     sql = '''
         select
           p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, br.*,
@@ -209,10 +210,11 @@ def improved_batting(date_id):
         group by br.player_id, br.date_id
         having position = 2
         '''
-    return improved_bp(date_id, sql, prev_sql, '_improvers_batting.html')
+    return improved_bp(date_id, max_age, sql, prev_sql, '_improvers_batting.html')
 
 @app.route('/improvers/<date_id>/pitching')
 def improved_pitching(date_id):
+    max_age = int(request.args.get('maxage', '99'))
     sql = '''
         select
           p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, pr.*,
@@ -237,9 +239,9 @@ def improved_pitching(date_id):
         group by pr.player_id, pr.date_id
         having position = 2
         '''
-    return improved_bp(date_id, sql, prev_sql, '_improvers_pitching.html')
+    return improved_bp(date_id, max_age, sql, prev_sql, '_improvers_pitching.html')
 
-def improved_bp(date_id, sql, prev_sql, template):
+def improved_bp(date_id, max_age, sql, prev_sql, template):
     date_id, date = get_date(date_id=date_id)
     cur = g.db.cursor()
     cur.execute(sql, [date_id])
@@ -270,7 +272,7 @@ def improved_bp(date_id, sql, prev_sql, template):
         else:
             del ratings[player_id]
     ages = get_ages(ratings, date)
-    ids = [id for id in ids if id in ratings]
+    ids = [id for id in ids if id in ratings and ages[id] < max_age]
     return render_template(template,
         ids=ids,
         ratings=ratings,
