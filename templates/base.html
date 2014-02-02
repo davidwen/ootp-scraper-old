@@ -18,13 +18,18 @@
         </ul>
         <div class="collapse navbar-collapse">
           <div class="navbar-center">{{title}}</div>
-          {% if date_id %}
-            <p class="navbar-text navbar-right navbar-date">
-              <a href="{{date_id - 1}}" class="navbar-link"><span class="glyphicon glyphicon-chevron-left"></span></a>
-              <span class="date">{{date}}</span>
-              <a href="{{date_id + 1}}" class="navbar-link"><span class="glyphicon glyphicon-chevron-right"></span></a>
-            </p>
-          {% endif %}
+          <p class="navbar-text navbar-right">
+            {% if has_filter %}
+              <a href="#" class="navbar-link filter"><span class="glyphicon glyphicon-filter"></span></a>
+            {% endif %}
+            {% if date_id %}
+              <span class="navbar-date">
+                <a href="{{date_id - 1}}" class="navbar-link"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                <span class="date">{{date}}</span>
+                <a href="{{date_id + 1}}" class="navbar-link"><span class="glyphicon glyphicon-chevron-right"></span></a>
+              </span>
+            {% endif %}
+          </p>
         </div>
       </div>
     </nav>

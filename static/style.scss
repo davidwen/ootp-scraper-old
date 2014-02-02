@@ -7,8 +7,10 @@ a {
     color: #333;
 }
 
-input[type="number"] {
-    width: 50px !important;
+nav {
+    .filter {
+        margin-right: 10px;
+    }
 }
 
 .nav > li {
@@ -35,6 +37,34 @@ input[type="number"] {
     .date {
         color: #eee;
         font-size: 14px;
+    }
+}
+
+.container {
+    position: relative;
+}
+
+.filter {
+    &.active {
+        color: #fff;
+    }
+}
+
+.filter-form {
+    padding: 10px;
+
+    input {
+        border: none;
+        box-shadow: none;
+        display: inline-block;
+        outline: none;
+        width: 100px;
+
+        &:focus {
+            border: none;
+            box-shadow: none;
+            outline: none;            
+        }
     }
 }
 

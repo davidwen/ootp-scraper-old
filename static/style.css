@@ -5,8 +5,8 @@ body {
 a {
   color: #333; }
 
-input[type="number"] {
-  width: 50px !important; }
+nav .filter {
+  margin-right: 10px; }
 
 .nav > li {
   display: inline-block !important; }
@@ -27,6 +27,25 @@ input[type="number"] {
 .navbar-date .date {
   color: #eee;
   font-size: 14px; }
+
+.container {
+  position: relative; }
+
+.filter.active {
+  color: #fff; }
+
+.filter-form {
+  padding: 10px; }
+  .filter-form input {
+    border: none;
+    box-shadow: none;
+    display: inline-block;
+    outline: none;
+    width: 100px; }
+    .filter-form input:focus {
+      border: none;
+      box-shadow: none;
+      outline: none; }
 
 .ratings-table {
   text-align: center; }

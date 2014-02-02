@@ -1,14 +1,13 @@
 {% extends "base.html" %}
 {% set title = 'Global Improvers' %}
 {% set active = 'improvers' %}
+{% set has_filter = True %}
 {% block content %}
-  <form id="max-age-form" class="form-inline" role="form">
-    <div class="form-group">
-      <label for="max-age">Max age:</label>
-      <input type="number" class="form-control input-sm" id="max-age">
-    </div>
-    <button type="submit" class="btn btn-default">Submit</button>
-  </form>
+  <div class="filter-form" style="display: none;">
+    <form id="max-age-form" role="form">
+      <input type="number" class="form-control" id="max-age" placeholder="Max age">
+    </form>
+  </div>
   <div id="improved-batting-ratings"></div>
   <div id="improved-pitching-ratings"></div>
 
@@ -37,6 +36,16 @@
       });
       return false;
     }).submit();
+
+    $('.filter').click(function() {
+      if ($(this).hasClass('active')) {
+        $(this).removeClass('active');
+        $('.filter-form').fadeOut();
+      } else {
+        $(this).addClass('active');
+        $('.filter-form').fadeIn();
+      }
+    });
   });
   </script>
 {% endblock %}
