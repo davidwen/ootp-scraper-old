@@ -67,6 +67,19 @@ def pitching_ratings(player_id):
     return render_template('_pitching_ratings.html',
         rows=rows)
 
+@app.route('/team/')
+def teams():
+    cur = g.db.cursor()
+    cur.execute('''
+        select *
+        from teams
+        where id = parent_id
+        order by name
+        ''')
+    teams = cur.fetchall()
+    return render_template('teams.html',
+        teams=teams)
+
 @app.route('/team/<team_id>/')
 def team(team_id):
     date_id, date = get_date()
