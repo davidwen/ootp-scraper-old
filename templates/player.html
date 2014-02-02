@@ -7,7 +7,7 @@
   <div id="batting-ratings"></div>
   <script>
   $(function() {
-    {% if player.position == 'P' %}
+    {% if player.position == 'SP' or player.position == 'MR' %}
       $.get('pitching', function(html) {
         $('#pitching-ratings').html(html);
       });
