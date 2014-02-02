@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-{% block title %}{{player.position}} {{player.name}}{% endblock %}
+{% set title = player.position + ' ' + player.name %}
 {% block content %}
-  <h1><a href="{{href}}">{{player.position}} {{player.name}}</a></h1>
   <h3>Age: {{age}}</h3>
   <div id="pitching-ratings"></div>
   <div id="batting-ratings"></div>

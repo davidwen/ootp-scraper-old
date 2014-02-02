@@ -17,7 +17,13 @@
           <li {% if active == 'waivers' %}class="active"{% endif %}><a href="/waivers"><span class="glyphicon glyphicon-flash"></span></a></li>
         </ul>
         <div class="collapse navbar-collapse">
-          <div class="navbar-center">{{title}}</div>
+          <div class="navbar-center">
+            {% if title_href %}
+              <a href="{{title_href}}" class="navbar-link title-link">{{title}}</a>
+            {% else %}
+              {{title}}
+            {% endif %}
+          </div>
           <p class="navbar-text navbar-right">
             {% if has_filter %}
               <a href="#" class="navbar-link filter"><span class="glyphicon glyphicon-filter"></span></a>

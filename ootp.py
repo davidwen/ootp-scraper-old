@@ -31,12 +31,12 @@ def player(player_id):
         select * from players where id = ?
         ''', [player_id])
     player = cur.fetchone()
-    href = ROOT + 'players/player_' + str(player_id) + '.html'
+    title_href = ROOT + 'players/player_' + str(player_id) + '.html'
     date_id, date = get_date()
     age = get_age(player['birthday'], date)
     return render_template('player.html',
         player=player,
-        href=href,
+        title_href=title_href,
         age=age)
 
 @app.route('/player/<player_id>/batting')

@@ -21,6 +21,8 @@ nav .filter {
   padding: 15px 0;
   font-size: 20px;
   line-height: 20px; }
+  .navbar-center .title-link {
+    color: #fff; }
 
 .navbar-date .glyphicon {
   font-size: 12px; }
