@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% set title = player.position + ' ' + player.name %}
 {% block content %}
-  <h3>Age: {{age}}</h3>
+  <h5>Age: {{age}}</h5>
+  <h5>Intelligence: {{intelligence}}</h5>
+  <h5>Work ethic: {{work_ethic}}</h5>
   <div id="pitching-ratings"></div>
   <div id="batting-ratings"></div>
   <script>

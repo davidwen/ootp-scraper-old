@@ -1,6 +1,5 @@
 {% extends "base.html" %}
-{% set title = 'Global Improvers' %}
-{% set active = 'improvers' %}
+{% set title = 'Top Improvers' %}
 {% set has_filter = True %}
 {% block content %}
   <div class="filter-form" style="display: none;">
@@ -12,6 +11,12 @@
           <input type="number" id="max-age" name="maxage" class="form-control">
         </div>
       </div>
+      <div class="form-group">
+        <label for="min-imp" class="col-sm-6 control-label">Min improvement:</label>
+        <div class="col-sm-6">
+          <input type="number" id="min-imp" name="minimp" class="form-control">
+        </div>
+      </div>
       <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
     </form>
   </div>
@@ -20,15 +25,17 @@
 
   <script>
   $(function() {
-    var battingUrl = '/improvers/{{date_id}}/batting';
-    var pitchingUrl = '/improvers/{{date_id}}/pitching'
+    var battingUrl = '/improvers/top/batting';
+    var pitchingUrl = '/improvers/top/pitching'
     $('#max-age-form').submit(function() {
-      var maxAge = $(this).find('input').val();
+      var maxAge = $(this).find('input[name=maxage]').val();
+      var minImp = $(this).find('input[name=minimp]').val();
       if (!maxAge) maxAge = 99;
+      if (!minImp) minImp = 1;
       $.ajax({
         type: 'GET',
         url: battingUrl,
-        data: {maxage: maxAge},
+        data: {maxage: maxAge, minimp: minImp},
         success: function(html) {
           $('#improved-batting-ratings').html(html);
         }
@@ -36,7 +43,7 @@
       $.ajax({
         type: 'GET',
         url: pitchingUrl,
-        data: {maxage: maxAge},
+        data: {maxage: maxAge, minimp: minImp},
         success: function(html) {
           $('#improved-pitching-ratings').html(html);
         }
