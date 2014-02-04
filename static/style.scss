@@ -92,17 +92,21 @@ nav {
 
     .subheader {
         background-color: #ddd;
+
+        .date {
+            width: 90px;
+        }
     }
 
-    .current {
+    .current, .catching, .catching, .stealing {
         background-color: lighten(#f39c12, 20);
     }
 
-    .vs-l {
+    .vs-l, .infield, .baserunning {
         background-color: lighten(#3498db, 20);
     }
 
-    .vs-r {
+    .vs-r, .outfield, .bunting {
         background-color: lighten(#2ecc71, 20);
     }
 

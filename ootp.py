@@ -51,30 +51,33 @@ def player(player_id):
 
 @app.route('/player/<int:player_id>/batting')
 def batting_ratings(player_id):
-    cur = g.db.cursor()
-    cur.execute('''
-        select br.*, date
-        from batting_ratings br
-        join dates on date_id = dates.id
-        where player_id = ?
-        order by date desc
-        ''', [player_id])
-    rows = cur.fetchall()
-    return render_template('_batting_ratings.html',
-        rows=rows)
+    return player_ratings(player_id, 'select r.*, date from batting_ratings r', '_batting_ratings.html')
 
 @app.route('/player/<int:player_id>/pitching')
 def pitching_ratings(player_id):
+    return player_ratings(player_id, 'select r.*, date from pitching_ratings r', '_pitching_ratings.html')
+
+@app.route('/player/<int:player_id>/run')
+def run_ratings(player_id):
+    return player_ratings(player_id, 'select r.*, date from run_ratings r', '_run_ratings.html')
+
+@app.route('/player/<int:player_id>/fielding')
+def fielding_ratings(player_id):
+    return player_ratings(player_id, 'select r.*, date from fielding_ratings r', '_fielding_ratings.html')
+
+@app.route('/player/<int:player_id>/position')
+def position_ratings(player_id):
+    return player_ratings(player_id, 'select r.*, date from position_ratings r', '_position_ratings.html')
+
+def player_ratings(player_id, sql, template):
     cur = g.db.cursor()
-    cur.execute('''
-        select pr.*, date
-        from pitching_ratings pr
+    cur.execute(sql + '''
         join dates on date_id = dates.id
         where player_id = ?
         order by date desc
         ''', [player_id])
     rows = cur.fetchall()
-    return render_template('_pitching_ratings.html',
+    return render_template(template,
         rows=rows)
 
 @app.route('/team/')

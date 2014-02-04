@@ -1,0 +1,22 @@
+<table class="table ratings-table table-condensed">
+  <tbody>
+    <tr class="subheader">
+      <td class="date">Date</td>
+      <td>Speed</td>
+      <td>Steal</td>
+      <td>Baserun</td>
+      <td>Sacbunt</td>
+      <td>Hitbunt</td>
+    </tr>
+    {% for row in rows %}
+      <tr>
+        <td>{{row.date}}</td>
+        <td class="stealing">{{row.speed}}</td>
+        <td class="stealing">{{row.steal}}</td>
+        <td class="baserunning">{{row.baserunning}}</td>
+        <td class="bunting">{{row.sac_bunt}}</td>
+        <td class="bunting">{{row.bunt_for_hit}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

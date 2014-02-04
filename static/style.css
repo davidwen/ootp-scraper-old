@@ -62,11 +62,13 @@ nav .filter {
     text-align: center; }
   .ratings-table .subheader {
     background-color: #ddd; }
-  .ratings-table .current {
+    .ratings-table .subheader .date {
+      width: 90px; }
+  .ratings-table .current, .ratings-table .catching, .ratings-table .catching, .ratings-table .stealing {
     background-color: #f8c573; }
-  .ratings-table .vs-l {
+  .ratings-table .vs-l, .ratings-table .infield, .ratings-table .baserunning {
     background-color: #8bc4ea; }
-  .ratings-table .vs-r {
+  .ratings-table .vs-r, .ratings-table .outfield, .ratings-table .bunting {
     background-color: #7ee2a8; }
   .ratings-table .potential {
     background-color: #f7dc6f; }

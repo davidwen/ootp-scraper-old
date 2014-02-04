@@ -6,6 +6,9 @@
   <h5>Work ethic: {{work_ethic}}</h5>
   <div id="pitching-ratings"></div>
   <div id="batting-ratings"></div>
+  <div id="run-ratings"></div>
+  <div id="fielding-ratings"></div>
+  <div id="position-ratings"></div>
   <script>
   $(function() {
     {% if player.position == 'SP' or player.position == 'MR' %}
@@ -17,6 +20,15 @@
         $('#batting-ratings').html(html);
       });
     {% endif %}
+    $.get('run', function(html) {
+        $('#run-ratings').html(html);
+      });
+    $.get('fielding', function(html) {
+        $('#fielding-ratings').html(html);
+      });
+    $.get('position', function(html) {
+        $('#position-ratings').html(html);
+      });
   });
   </script>
 {% endblock %}

@@ -1,0 +1,30 @@
+<table class="table ratings-table table-condensed">
+  <tbody>
+    <tr class="subheader">
+      <td class="date">Date</td>
+      <td>C Arm</td>
+      <td>C Ability</td>
+      <td>IF Range</td>
+      <td>IF Errors</td>
+      <td>IF Arm</td>
+      <td>IF Turn DP</td>
+      <td>OF Range</td>
+      <td>OF Errors</td>
+      <td>OF Arm</td>
+    </tr>
+    {% for row in rows %}
+      <tr>
+        <td>{{row.date}}</td>
+        <td class="catching">{{row.catcher_arm}}</td>
+        <td class="catching">{{row.catcher_ability}}</td>
+        <td class="infield">{{row.infield_range}}</td>
+        <td class="infield">{{row.infield_errors}}</td>
+        <td class="infield">{{row.infield_arm}}</td>
+        <td class="infield">{{row.infield_turn_dp}}</td>
+        <td class="outfield">{{row.outfield_range}}</td>
+        <td class="outfield">{{row.outfield_errors}}</td>
+        <td class="outfield">{{row.outfield_arm}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

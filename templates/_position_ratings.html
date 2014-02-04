@@ -1,0 +1,28 @@
+<table class="table ratings-table table-condensed">
+  <tbody>
+    <tr class="subheader">
+      <td class="date">Date</td>
+      <td>C</td>
+      <td>1B</td>
+      <td>2B</td>
+      <td>3B</td>
+      <td>SS</td>
+      <td>LF</td>
+      <td>CF</td>
+      <td>RF</td>
+    </tr>
+    {% for row in rows %}
+      <tr>
+        <td>{{row.date}}</td>
+        <td class="catching">{{row.c}}</td>
+        <td class="infield">{{row.first_b}}</td>
+        <td class="infield">{{row.second_b}}</td>
+        <td class="infield">{{row.third_b}}</td>
+        <td class="infield">{{row.ss}}</td>
+        <td class="outfield">{{row.lf}}</td>
+        <td class="outfield">{{row.cf}}</td>
+        <td class="outfield">{{row.rf}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
