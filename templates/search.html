@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% set title = 'Search' %}
+{% set active = 'search' %}
+{% block content %}
+  <div id="search-table"></div>
+
+  <script>
+  $(function() {
+    $.ajax({
+      type: 'GET',
+      url: 'table',
+      data: {cols: ['age', 'contact', 'gap', 'power', 'eye', 'avoid_k']},
+      success: function(html) {
+        $('#search-table').html(html);
+      }
+    });
+  });
+  </script>
+{% endblock %}

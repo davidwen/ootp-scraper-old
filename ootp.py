@@ -544,6 +544,34 @@ def waivers_pitching(date_id):
         rows=rows,
         ages=ages)
 
+@app.route('/search/')
+def search():
+    return render_template('search.html')
+
+@app.route('/search/table')
+def search_table():
+    cols = ['player'] + [c.encode('ascii', 'ignore') for c in request.args.getlist('cols[]')]
+    date_id, date = get_date()
+    cur = g.db.cursor()
+    cur.execute('''
+        select p.*, br.*
+        from batting_ratings br
+        left join batting_ratings br_later
+            on br_later.player_id = br.player_id
+            and br_later.date_id > br.date_id
+        join players p on br.player_id = p.id
+        where br_later.player_id is null
+        limit 100
+        ''')
+    rows = cur.fetchall()
+    ages = get_ages_from_rows(rows, date)
+    col_classes = {'player': 'player-name'}
+    return render_template('_search.html',
+        rows=rows,
+        cols=cols,
+        ages=ages,
+        col_classes=col_classes)
+
 def get_date(date_id=None):
     sql = 'select * from dates '
     params = []

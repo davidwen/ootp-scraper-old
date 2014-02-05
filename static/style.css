@@ -82,7 +82,8 @@ nav .filter {
 #dropped-batting-ratings,
 #dropped-pitching-ratings,
 #waivers-batting-ratings,
-#waivers-pitching-ratings {
+#waivers-pitching-ratings,
+#search-table {
   margin-bottom: 50px; }
   #team-batting-ratings .subheader td,
   #team-pitching-ratings .subheader td,
@@ -91,7 +92,8 @@ nav .filter {
   #dropped-batting-ratings .subheader td,
   #dropped-pitching-ratings .subheader td,
   #waivers-batting-ratings .subheader td,
-  #waivers-pitching-ratings .subheader td {
+  #waivers-pitching-ratings .subheader td,
+  #search-table .subheader td {
     font-weight: bold;
     vertical-align: middle; }
   #team-batting-ratings td,
@@ -101,7 +103,8 @@ nav .filter {
   #dropped-batting-ratings td,
   #dropped-pitching-ratings td,
   #waivers-batting-ratings td,
-  #waivers-pitching-ratings td {
+  #waivers-pitching-ratings td,
+  #search-table td {
     font-size: 11px; }
     #team-batting-ratings td.player-name, #team-batting-ratings td.ml-team-name, #team-batting-ratings td.player-age,
     #team-pitching-ratings td.player-name,
@@ -124,7 +127,10 @@ nav .filter {
     #waivers-batting-ratings td.player-age,
     #waivers-pitching-ratings td.player-name,
     #waivers-pitching-ratings td.ml-team-name,
-    #waivers-pitching-ratings td.player-age {
+    #waivers-pitching-ratings td.player-age,
+    #search-table td.player-name,
+    #search-table td.ml-team-name,
+    #search-table td.player-age {
       font-size: 13px;
       text-align: left;
       vertical-align: middle; }

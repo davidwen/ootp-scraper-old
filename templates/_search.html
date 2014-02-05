@@ -1,0 +1,22 @@
+<table class="table ratings-table table-condensed">
+  <tbody>
+    <tr class="subheader">
+      {% for col in cols %}
+        <td class="{{col_classes[col]}}">{{col}}</td>
+      {% endfor %}
+    </tr>
+    {% for row in rows %}
+      <tr>
+        {% for col in cols %}
+          {% if col == 'age' %}
+            <td>{{ages[row.player_id]}}</td>
+          {% elif col == 'player' %}
+            <td class="player-name"><a href="/player/{{row.player_id}}">{{row.position}} {{row.name}}</a></td>
+          {% else %}
+            <td class="{{col_classes[col]}}">{{row[col]}}</td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
