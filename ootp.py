@@ -546,22 +546,54 @@ def waivers_pitching(date_id):
 
 @app.route('/search/')
 def search():
-    return render_template('search.html')
+    col_rows = [
+        [('Age', ['age']),
+         ('Intelligence', ['intelligence']),
+         ('Work Ethic', ['work_ethic'])],
+        [('Batting (current)', ['contact', 'gap', 'power', 'eye', 'avoid_k']),
+         ('Batting (potential)', ['pot_contact', 'pot_gap', 'pot_power', 'pot_eye', 'pot_avoid_k']),
+         ('Speed', ['speed']),
+         ('Stealing', ['steal']),
+         ('Bunt for hit', ['bunt_for_hit'])],
+        [('Pitching (current)', ['stuff', 'movement', 'control']),
+         ('Pitching (potential)', ['pot_stuff', 'pot_movement', 'pot_control'])]]
+    row_classes = ['', 'batting', 'pitching']
+    return render_template('search.html',
+        col_rows=col_rows,
+        row_classes=row_classes)
 
 @app.route('/search/table')
 def search_table():
     cols = ['player'] + [c.encode('ascii', 'ignore') for c in request.args.getlist('cols[]')]
+    batting = request.args.get('batting', True)
+    pitching = request.args.get('pitching', True)
+    where = ''
+    if pitching == 'true' and batting == 'false':
+        where = 'and position in ("SP", "MR")'
+    elif batting == 'true' and pitching == 'false':
+        where = 'and position not in ("SP", "MR")'
     date_id, date = get_date()
     cur = g.db.cursor()
     cur.execute('''
-        select p.*, br.*
-        from batting_ratings br
+        select p.*, br.*, rr.*, pr.*
+        from players p
+        left join batting_ratings br on p.id = br.player_id
         left join batting_ratings br_later
             on br_later.player_id = br.player_id
             and br_later.date_id > br.date_id
-        join players p on br.player_id = p.id
+        left join pitching_ratings pr on p.id = pr.player_id
+        left join pitching_ratings pr_later
+            on pr_later.player_id = pr.player_id
+            and pr_later.date_id > pr.date_id
+        left join run_ratings rr on rr.player_id = br.player_id
+        left join run_ratings rr_later
+            on rr_later.player_id = rr.player_id
+            and rr_later.date_id > rr.date_id
         where br_later.player_id is null
-        limit 100
+        and rr_later.player_id is null
+        and pr_later.player_id is null ''' +
+        where + '''
+        limit 1000
         ''')
     rows = cur.fetchall()
     ages = get_ages_from_rows(rows, date)

@@ -2,18 +2,51 @@
 {% set title = 'Search' %}
 {% set active = 'search' %}
 {% block content %}
+  <div>
+    {% set i = 0 %}
+    {% for col_row in col_rows %}
+      <div class="row {{row_classes[i]}}">
+        {% set i = i + 1 %}
+        {% for col in col_row %}
+          <div class="col-sm-2">
+            <label>
+              <input type="checkbox" name="cols" value="{{','.join(col[1])}}">
+              {{col[0]}}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    <button class="btn submit-btn">Submit</button>
+  </div>
+
   <div id="search-table"></div>
 
   <script>
   $(function() {
-    $.ajax({
-      type: 'GET',
-      url: 'table',
-      data: {cols: ['age', 'contact', 'gap', 'power', 'eye', 'avoid_k']},
-      success: function(html) {
-        $('#search-table').html(html);
-      }
-    });
+    $('.submit-btn').click(function() {
+      var cols = [];
+      var pitching = true;
+      var batting = true;
+      $('input[name=cols]').each(function() {
+        if ($(this).prop('checked')) {
+          cols = cols.concat($(this).val().split(','));
+          if ($(this).closest('.row').hasClass('pitching')) {
+            batting = false;
+          } else if ($(this).closest('.row').hasClass('batting')) {
+            pitching = false
+          }
+        }
+      });
+      $.ajax({
+        type: 'GET',
+        url: 'table',
+        data: {cols: cols, batting: batting, pitching: pitching},
+        success: function(html) {
+          $('#search-table').html(html);
+        }
+      });
+    }).click();
   });
   </script>
 {% endblock %}
