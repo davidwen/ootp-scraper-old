@@ -14,14 +14,14 @@
     {% for row in rows %}
       <tr>
         <td>{{row.date}}</td>
-        <td class="catching">{{row.c}}</td>
-        <td class="infield">{{row.first_b}}</td>
-        <td class="infield">{{row.second_b}}</td>
-        <td class="infield">{{row.third_b}}</td>
-        <td class="infield">{{row.ss}}</td>
-        <td class="outfield">{{row.lf}}</td>
-        <td class="outfield">{{row.cf}}</td>
-        <td class="outfield">{{row.rf}}</td>
+        <td class="catching">{% if row.c %}{{row.c}}{% endif %}</td>
+        <td class="infield">{% if row.first_b %}{{row.first_b}}{% endif %}</td>
+        <td class="infield">{% if row.second_b %}{{row.second_b}}{% endif %}</td>
+        <td class="infield">{% if row.third_b %}{{row.third_b}}{% endif %}</td>
+        <td class="infield">{% if row.ss %}{{row.ss}}{% endif %}</td>
+        <td class="outfield">{% if row.lf %}{{row.lf}}{% endif %}</td>
+        <td class="outfield">{% if row.cf %}{{row.cf}}{% endif %}</td>
+        <td class="outfield">{% if row.rf %}{{row.rf}}{% endif %}</td>
       </tr>
     {% endfor %}
   </tbody>
