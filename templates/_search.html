@@ -15,8 +15,8 @@
         {% for col in cols %}
           {% if col == 'age' %}
             <td>{{ages[row.player_id]}}</td>
-          {% elif col == 'player' %}
-            <td class="player-name"><a href="/player/{{row.player_id}}">{{row.position}} {{row.name}}</a></td>
+          {% elif col == 'name' %}
+            <td class="player-name"><a href="/player/{{row.id}}">{{row.position}} {{row.name}}</a></td>
           {% else %}
             <td class="{{col_classes[col]}}">{{row[col]}}</td>
           {% endif %}

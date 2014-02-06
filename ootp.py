@@ -590,6 +590,12 @@ def search_table():
         where = 'and position not in ("SP", "MR") '
     order_by = ''
     if sortcol != '' and sortcol is not None:
+        if sortcol == 'age':
+            sortcol = 'birthday'
+            if sortdir == 'desc':
+                sortdir = 'asc'
+            else:
+                sortdir = 'desc'
         order_by = str.format('order by {0} ', sortcol)
         if sortdir == 'desc':
             order_by += 'desc '
@@ -631,6 +637,12 @@ def search_table():
     total = cur.fetchone()[0]
     ages = get_ages_from_rows(rows, date)
     col_classes = {'name': 'player-name'}
+    if sortcol == 'birthday':
+        sortcol = 'age'
+        if sortdir == 'desc':
+            sortdir = 'asc'
+        else:
+            sortdir = 'desc'
     return render_template('_search.html',
         rows=rows,
         cols=cols,
