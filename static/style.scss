@@ -96,6 +96,16 @@ nav {
         .date {
             width: 90px;
         }
+
+        &.search-subheader {
+            th {
+                text-align: left;
+
+                &.sorted {
+                    color: blue;
+                }
+            }
+        }
     }
 
     .current, .catching, .catching, .stealing {

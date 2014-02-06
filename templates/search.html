@@ -62,6 +62,12 @@
       $('.submit-btn').click();
     });
 
+    $('#search-table').on('click', '.subheader th', function() {
+      $('.sorted').removeClass('sorted');
+      $(this).addClass('sorted');
+      $('.submit-btn').click();
+    });
+
     $('.submit-btn').click(function() {
       var cols = [];
       var pitching = true;
@@ -78,7 +84,7 @@
       });
       var start = Number($('.start').text()) - 1;
       var limit = $('.limit').val();
-      $('#search-table').text('Loading...');
+      var sortcol = $('th.sorted').text();
       $.ajax({
         type: 'GET',
         url: 'table',
@@ -87,7 +93,8 @@
           batting: batting,
           pitching: pitching,
           start: start,
-          limit: limit
+          limit: limit,
+          sortcol: sortcol
         },
         success: function(html) {
           $('#search-table').html(html);

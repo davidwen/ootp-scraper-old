@@ -575,17 +575,21 @@ def search():
 
 @app.route('/search/table')
 def search_table():
-    cols = ['player'] + [c.encode('ascii', 'ignore') for c in request.args.getlist('cols[]')]
+    cols = ['name'] + [c.encode('ascii', 'ignore') for c in request.args.getlist('cols[]')]
     start = int(request.args.get('start', 0))
     limit = int(request.args.get('limit', 25))
     end = start + limit
     batting = request.args.get('batting', True)
     pitching = request.args.get('pitching', True)
+    sortcol = request.args.get('sortcol', None)
     where = ''
     if pitching == 'true' and batting == 'false':
-        where = 'and position in ("SP", "MR")'
+        where = 'and position in ("SP", "MR") '
     elif batting == 'true' and pitching == 'false':
-        where = 'and position not in ("SP", "MR")'
+        where = 'and position not in ("SP", "MR") '
+    order_by = ''
+    if sortcol != '' and sortcol is not None:
+        order_by = str.format('order by {0} ', sortcol)
     date_id, date = get_date()
     cur = g.db.cursor()
     sql = '''
@@ -615,13 +619,13 @@ def search_table():
         and rr_later.player_id is null
         and pr_later.player_id is null
         and fr_later.player_id is null
-        and posr_later.player_id is null ''' + where
+        and posr_later.player_id is null ''' + where + order_by
     cur.execute(sql + str.format('limit {0}, {1}', start, limit))
     rows = cur.fetchall()
     cur.execute('select count(*) from (' + sql + ') s')
     total = cur.fetchone()[0]
     ages = get_ages_from_rows(rows, date)
-    col_classes = {'player': 'player-name'}
+    col_classes = {'name': 'player-name'}
     return render_template('_search.html',
         rows=rows,
         cols=cols,
@@ -629,7 +633,8 @@ def search_table():
         col_classes=col_classes,
         total=total,
         start=start + 1,
-        end=min(end, total))
+        end=min(end, total),
+        sortcol=sortcol)
 
 def get_date(date_id=None):
     sql = 'select * from dates '

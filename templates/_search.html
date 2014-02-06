@@ -2,12 +2,14 @@
 <input type="hidden" name="start" value="{{start}}">
 <input type="hidden" name="end" value="{{end}}">
 <table class="table ratings-table table-condensed">
-  <tbody>
-    <tr class="subheader">
+  <thead>
+    <tr class="subheader search-subheader">
       {% for col in cols %}
-        <td class="{{col_classes[col]}}">{{col}}</td>
+        <th class="{{col_classes[col]}} {% if col == sortcol %}sorted{% endif %}">{{col}}</th>
       {% endfor %}
     </tr>
+  </thead>
+  <tbody>
     {% for row in rows %}
       <tr>
         {% for col in cols %}

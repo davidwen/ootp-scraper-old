@@ -64,6 +64,10 @@ nav .filter {
     background-color: #ddd; }
     .ratings-table .subheader .date {
       width: 90px; }
+    .ratings-table .subheader.search-subheader th {
+      text-align: left; }
+      .ratings-table .subheader.search-subheader th.sorted {
+        color: blue; }
   .ratings-table .current, .ratings-table .catching, .ratings-table .catching, .ratings-table .stealing {
     background-color: #f8c573; }
   .ratings-table .vs-l, .ratings-table .infield, .ratings-table .baserunning {
