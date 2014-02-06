@@ -169,9 +169,17 @@ nav {
 .search-container {
     .table-controls {
         margin-bottom: 25px;
-    }
 
-    .submit-btn {
-        margin-left: 25px;
+        .submit-btn {
+            margin-left: 25px;
+        }
+
+        .glyphicon {
+            font-size: 10px;
+        }
+
+        .limit-container {
+            margin-right: 25px;
+        }
     }
 }

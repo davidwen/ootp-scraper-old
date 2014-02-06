@@ -576,6 +576,9 @@ def search():
 @app.route('/search/table')
 def search_table():
     cols = ['player'] + [c.encode('ascii', 'ignore') for c in request.args.getlist('cols[]')]
+    start = int(request.args.get('start', 0))
+    limit = int(request.args.get('limit', 25))
+    end = start + limit
     batting = request.args.get('batting', True)
     pitching = request.args.get('pitching', True)
     where = ''
@@ -585,7 +588,7 @@ def search_table():
         where = 'and position not in ("SP", "MR")'
     date_id, date = get_date()
     cur = g.db.cursor()
-    cur.execute('''
+    sql = '''
         select p.*, br.*, rr.*, pr.*, fr.*, posr.*
         from players p
         left join batting_ratings br on p.id = br.player_id
@@ -612,18 +615,21 @@ def search_table():
         and rr_later.player_id is null
         and pr_later.player_id is null
         and fr_later.player_id is null
-        and posr_later.player_id is null ''' +
-        where + '''
-        limit 1000
-        ''')
+        and posr_later.player_id is null ''' + where
+    cur.execute(sql + str.format('limit {0}, {1}', start, limit))
     rows = cur.fetchall()
+    cur.execute('select count(*) from (' + sql + ') s')
+    total = cur.fetchone()[0]
     ages = get_ages_from_rows(rows, date)
     col_classes = {'player': 'player-name'}
     return render_template('_search.html',
         rows=rows,
         cols=cols,
         ages=ages,
-        col_classes=col_classes)
+        col_classes=col_classes,
+        total=total,
+        start=start + 1,
+        end=min(end, total))
 
 def get_date(date_id=None):
     sql = 'select * from dates '

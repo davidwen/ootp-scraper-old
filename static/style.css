@@ -158,5 +158,9 @@ nav .filter {
 
 .search-container .table-controls {
   margin-bottom: 25px; }
-.search-container .submit-btn {
-  margin-left: 25px; }
+  .search-container .table-controls .submit-btn {
+    margin-left: 25px; }
+  .search-container .table-controls .glyphicon {
+    font-size: 10px; }
+  .search-container .table-controls .limit-container {
+    margin-right: 25px; }

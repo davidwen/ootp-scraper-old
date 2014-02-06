@@ -4,13 +4,35 @@
 {% block content %}
   <div class="search-container">
     <div class="table-controls">
-      <strong>Columns:</strong>
-      <select class="multiselect" multiple="multiple">
-        {% for col in cols %}
-          <option class="{{col[2]}}" value="{{','.join(col[1])}}">{{col[0]}}</option>
-        {% endfor %}
-      </select>
-      <button class="btn submit-btn">Submit</button>
+      <div class="pull-left">
+        <strong>Columns:</strong>
+        <select class="multiselect" multiple="multiple">
+          {% for col in cols %}
+            <option class="column {{col[2]}}" value="{{','.join(col[1])}}">{{col[0]}}</option>
+          {% endfor %}
+        </select>
+        <button class="btn submit-btn">Submit</button>
+      </div>
+      <div class="pull-right">
+        <span class="limit-container">
+          <strong>Show</strong>
+          <select class="multiselect limit">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="9999">All</option>
+          </select>
+          <strong>rows</strong>
+        </span>
+        <strong class="start">1</strong>
+        <span>-</span>
+        <strong class="end"></strong>
+        <span>of</span>
+        <strong class="total"></strong>
+        <button class="btn prev-btn"><span class="glyphicon glyphicon-chevron-left"></span></button>
+        <button class="btn next-btn"><span class="glyphicon glyphicon-chevron-right"></span></button>
+      </div>
+      <div class="clearfix"></div>
     </div>
 
     <div id="search-table"></div>
@@ -21,11 +43,30 @@
     $('.multiselect').multiselect({
       maxHeight: 400
     });
+
+    $('.limit').change(function() {
+      $('.submit-btn').click();
+    });
+
+    $('.next-btn').click(function() {
+      $('.start').text(Number($('.start').text()) + Number($('.limit').val()));
+      $('.submit-btn').click();
+    });
+
+    $('.prev-btn').click(function() {
+      var newStart = Number($('.start').text()) - Number($('.limit').val());
+      if (newStart < 1) {
+        newStart = 1;
+      }
+      $('.start').text(newStart);
+      $('.submit-btn').click();
+    });
+
     $('.submit-btn').click(function() {
       var cols = [];
       var pitching = true;
       var batting = true;
-      $('option').each(function() {
+      $('option.column').each(function() {
         if ($(this).prop('selected')) {
           cols = cols.concat($(this).val().split(','));
           if ($(this).hasClass('pitching')) {
@@ -35,13 +76,37 @@
           }
         }
       });
+      var start = Number($('.start').text()) - 1;
+      var limit = $('.limit').val();
       $('#search-table').text('Loading...');
       $.ajax({
         type: 'GET',
         url: 'table',
-        data: {cols: cols, batting: batting, pitching: pitching},
+        data: {
+          cols: cols,
+          batting: batting,
+          pitching: pitching,
+          start: start,
+          limit: limit
+        },
         success: function(html) {
           $('#search-table').html(html);
+          var total = Number($('input[name=total]').val());
+          var start = Number($('input[name=start]').val());
+          var end = Number($('input[name=end]').val());
+          $('.total').text(total);
+          $('.start').text(start);
+          $('.end').text(end);
+          if (start == 0) {
+            $('.prev-btn').attr('disabled', true);  
+          } else {
+            $('.prev-btn').removeAttr('disabled');
+          }
+          if (end >= total) {
+            $('.next-btn').attr('disabled', true);  
+          } else {
+            $('.next-btn').removeAttr('disabled');
+          }
         }
       });
     }).click();
