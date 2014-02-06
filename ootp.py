@@ -582,6 +582,7 @@ def search_table():
     batting = request.args.get('batting', True)
     pitching = request.args.get('pitching', True)
     sortcol = request.args.get('sortcol', None)
+    sortdir = request.args.get('sortdir', None)
     where = ''
     if pitching == 'true' and batting == 'false':
         where = 'and position in ("SP", "MR") '
@@ -590,6 +591,10 @@ def search_table():
     order_by = ''
     if sortcol != '' and sortcol is not None:
         order_by = str.format('order by {0} ', sortcol)
+        if sortdir == 'desc':
+            order_by += 'desc '
+        if sortcol != 'name':
+            order_by += ', name '
     date_id, date = get_date()
     cur = g.db.cursor()
     sql = '''
@@ -634,7 +639,8 @@ def search_table():
         total=total,
         start=start + 1,
         end=min(end, total),
-        sortcol=sortcol)
+        sortcol=sortcol,
+        sortdir=sortdir)
 
 def get_date(date_id=None):
     sql = 'select * from dates '

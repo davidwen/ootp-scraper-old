@@ -103,6 +103,10 @@ nav {
 
                 &.sorted {
                     color: blue;
+
+                    &.reverse {
+                        color: red;
+                    }
                 }
             }
         }

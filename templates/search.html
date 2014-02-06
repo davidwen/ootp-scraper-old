@@ -63,8 +63,16 @@
     });
 
     $('#search-table').on('click', '.subheader th', function() {
-      $('.sorted').removeClass('sorted');
-      $(this).addClass('sorted');
+      if ($(this).hasClass('sorted')) {
+        if ($(this).hasClass('reverse')) {
+          $(this).removeClass('reverse');
+        } else {
+          $(this).addClass('reverse');
+        }
+      } else {
+        $('.sorted').removeClass('sorted');
+        $(this).addClass('sorted');
+      }
       $('.submit-btn').click();
     });
 
@@ -85,6 +93,7 @@
       var start = Number($('.start').text()) - 1;
       var limit = $('.limit').val();
       var sortcol = $('th.sorted').text();
+      var sortdir = $('th.sorted').hasClass('reverse') ? 'desc' : 'asc';
       $.ajax({
         type: 'GET',
         url: 'table',
@@ -94,7 +103,8 @@
           pitching: pitching,
           start: start,
           limit: limit,
-          sortcol: sortcol
+          sortcol: sortcol,
+          sortdir: sortdir
         },
         success: function(html) {
           $('#search-table').html(html);
