@@ -2,42 +2,40 @@
 {% set title = 'Search' %}
 {% set active = 'search' %}
 {% block content %}
-  <div>
-    {% set i = 0 %}
-    {% for col_row in col_rows %}
-      <div class="row {{row_classes[i]}}">
-        {% set i = i + 1 %}
-        {% for col in col_row %}
-          <div class="col-sm-2">
-            <label>
-              <input type="checkbox" name="cols" value="{{','.join(col[1])}}">
-              {{col[0]}}
-            </label>
-          </div>
+  <div class="search-container">
+    <div class="table-controls">
+      <strong>Columns:</strong>
+      <select class="multiselect" multiple="multiple">
+        {% for col in cols %}
+          <option class="{{col[2]}}" value="{{','.join(col[1])}}">{{col[0]}}</option>
         {% endfor %}
-      </div>
-    {% endfor %}
-    <button class="btn submit-btn">Submit</button>
-  </div>
+      </select>
+      <button class="btn submit-btn">Submit</button>
+    </div>
 
-  <div id="search-table"></div>
+    <div id="search-table"></div>
+  </div>
 
   <script>
   $(function() {
+    $('.multiselect').multiselect({
+      maxHeight: 400
+    });
     $('.submit-btn').click(function() {
       var cols = [];
       var pitching = true;
       var batting = true;
-      $('input[name=cols]').each(function() {
-        if ($(this).prop('checked')) {
+      $('option').each(function() {
+        if ($(this).prop('selected')) {
           cols = cols.concat($(this).val().split(','));
-          if ($(this).closest('.row').hasClass('pitching')) {
+          if ($(this).hasClass('pitching')) {
             batting = false;
-          } else if ($(this).closest('.row').hasClass('batting')) {
+          } else if ($(this).hasClass('batting')) {
             pitching = false
           }
         }
       });
+      $('#search-table').text('Loading...');
       $.ajax({
         type: 'GET',
         url: 'table',

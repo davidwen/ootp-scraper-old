@@ -546,21 +546,32 @@ def waivers_pitching(date_id):
 
 @app.route('/search/')
 def search():
-    col_rows = [
-        [('Age', ['age']),
-         ('Intelligence', ['intelligence']),
-         ('Work Ethic', ['work_ethic'])],
-        [('Batting (current)', ['contact', 'gap', 'power', 'eye', 'avoid_k']),
-         ('Batting (potential)', ['pot_contact', 'pot_gap', 'pot_power', 'pot_eye', 'pot_avoid_k']),
-         ('Speed', ['speed']),
-         ('Stealing', ['steal']),
-         ('Bunt for hit', ['bunt_for_hit'])],
-        [('Pitching (current)', ['stuff', 'movement', 'control']),
-         ('Pitching (potential)', ['pot_stuff', 'pot_movement', 'pot_control'])]]
-    row_classes = ['', 'batting', 'pitching']
+    cols = [
+        ('Age', ['age'], ''),
+        ('Intelligence', ['intelligence'], ''),
+        ('Work ethic', ['work_ethic'], ''),
+        ('Batting (current)', ['contact', 'gap', 'power', 'eye', 'avoid_k'], 'batting'),
+        ('Batting (potential)', ['pot_contact', 'pot_gap', 'pot_power', 'pot_eye', 'pot_avoid_k'], 'batting'),
+        ('Speed', ['speed'], 'batting'),
+        ('Stealing', ['steal'], 'batting'),
+        ('Bunt for hit', ['bunt_for_hit'], 'batting'),
+        ('Pitching (current)', ['stuff', 'movement', 'control'], 'pitching'),
+        ('Pitching (potential)', ['pot_stuff', 'pot_movement', 'pot_control'], 'pitching'),
+        ('Stamina', ['stamina'], 'pitching'),
+        ('Velocity', ['velocity'], 'pitching'),
+        ('Hold runner', ['hold'], 'pitching'),
+        ('Groundball %', ['groundball'], 'pitching'),
+        ('Catcher ability', ['catcher_ability'], 'batting'),
+        ('Catcher arm', ['catcher_arm'], 'batting'),
+        ('Infield range', ['infield_range'], 'batting'),
+        ('Infield errors', ['infield_errors'], 'batting'),
+        ('Infield arm', ['infield_arm'], 'batting'),
+        ('Infield turn dp', ['infield_turn_dp'], 'batting'),
+        ('Outfield range', ['outfield_range'], 'batting'),
+        ('Outfield errors', ['outfield_errors'], 'batting'),
+        ('Outfield arm', ['outfield_arm'], 'batting')]
     return render_template('search.html',
-        col_rows=col_rows,
-        row_classes=row_classes)
+        cols=cols)
 
 @app.route('/search/table')
 def search_table():
@@ -575,7 +586,7 @@ def search_table():
     date_id, date = get_date()
     cur = g.db.cursor()
     cur.execute('''
-        select p.*, br.*, rr.*, pr.*
+        select p.*, br.*, rr.*, pr.*, fr.*, posr.*
         from players p
         left join batting_ratings br on p.id = br.player_id
         left join batting_ratings br_later
@@ -589,9 +600,19 @@ def search_table():
         left join run_ratings rr_later
             on rr_later.player_id = rr.player_id
             and rr_later.date_id > rr.date_id
+        left join fielding_ratings fr on fr.player_id = br.player_id
+        left join fielding_ratings fr_later
+            on fr_later.player_id = fr.player_id
+            and fr_later.date_id > fr.date_id
+        left join position_ratings posr on posr.player_id = br.player_id
+        left join position_ratings posr_later
+            on posr_later.player_id = posr.player_id
+            and posr_later.date_id > posr.date_id
         where br_later.player_id is null
         and rr_later.player_id is null
-        and pr_later.player_id is null ''' +
+        and pr_later.player_id is null
+        and fr_later.player_id is null
+        and posr_later.player_id is null ''' +
         where + '''
         limit 1000
         ''')

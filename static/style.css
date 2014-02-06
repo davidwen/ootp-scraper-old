@@ -155,3 +155,8 @@ nav .filter {
 #improved-pitching-ratings .decrease {
   color: red;
   text-decoration: underline; }
+
+.search-container .table-controls {
+  margin-bottom: 25px; }
+.search-container .submit-btn {
+  margin-left: 25px; }
