@@ -131,3 +131,8 @@ CREATE TABLE IF NOT EXISTS waiver_wire(
     date_id INTEGER,
     PRIMARY KEY (player_id, date_id)
 )
+
+CREATE TABLE IF NOT EXISTS upcoming_fa(
+    player_id INTEGER,
+    PRIMARY KEY (player_id)
+)
