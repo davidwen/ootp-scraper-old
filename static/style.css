@@ -162,6 +162,12 @@ nav .filter {
   color: red;
   text-decoration: underline; }
 
+.search-container .control-header {
+  width: 200px; }
+.search-container .filter-container {
+  margin-bottom: 25px; }
+  .search-container .filter-container .val {
+    height: 34px; }
 .search-container .table-controls {
   margin-bottom: 25px; }
   .search-container .table-controls .submit-btn {

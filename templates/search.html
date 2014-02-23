@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% set title = 'Search' %}
 {% set active = 'search' %}
-{% block content %}
+{% block content %} 
   <div class="search-container">
     <div class="table-controls">
       <div class="pull-left">
-        <strong>Columns:</strong>
+        <strong class="control-header">Columns:</strong>
         <select class="multiselect" multiple="multiple">
           {% for col in cols %}
             <option class="column {{col[2]}}" value="{{','.join(col[1])}}">{{col[0]}}</option>
@@ -34,13 +34,41 @@
       </div>
       <div class="clearfix"></div>
     </div>
-
+    <div class="filter-container">
+      <strong class="control-header">Filters:</strong>
+      <div class="row">
+        <div class="col-sm-2">
+          <select class="multiselect multiselect-wide">
+            {% for col in cols %}
+              {% for c in col[1] %}
+                <option value="{{c}}">{{c}}</option>
+              {% endfor %}
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <select class="multiselect multiselect-wide">
+            <option value="gt">greater than</option>
+            <option value="lt">less than</option>
+            <option value="eq">equal to</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <input type="number" class="val" name="val">
+        </div>
+      </div>
+    </div>
     <div id="search-table"></div>
   </div>
 
   <script>
   $(function() {
-    $('.multiselect').multiselect({
+    $('.multiselect:not(.multiselect-wide)').multiselect({
+      maxHeight: 400
+    });
+
+    $('.multiselect-wide').multiselect({
+      buttonWidth: 150,
       maxHeight: 400
     });
 

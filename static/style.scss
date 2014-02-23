@@ -181,6 +181,18 @@ nav {
 }
 
 .search-container {
+    .control-header {
+        width: 200px;
+    }
+
+    .filter-container {
+        margin-bottom: 25px;
+
+        .val {
+            height: 34px;
+        }
+    }
+
     .table-controls {
         margin-bottom: 25px;
 
