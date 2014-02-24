@@ -544,6 +544,58 @@ def waivers_pitching(date_id):
         rows=rows,
         ages=ages)
 
+@app.route('/upcomingfa/')
+def upcoming_fa():
+    return render_template('upcomingfa.html')
+
+@app.route('/upcomingfa/batting')
+def upcoming_fa_batting():
+    date_id, date = get_date()
+
+    cur = g.db.cursor()
+    cur.execute('''
+        select
+          p.name, p.position, p.birthday, br.*,
+          br.contact + br.gap + br.power + br.eye + br.avoid_k as overall
+        from batting_ratings br
+        left join batting_ratings br_later
+          on br_later.player_id = br.player_id
+          and br_later.date_id > br.date_id
+        join players p on br.player_id = p.id
+        join upcoming_fa ufa on ufa.player_id = br.player_id
+        and br_later.player_id is null
+        order by overall desc
+        ''')
+    rows = cur.fetchall()
+    ages = get_ages_from_rows(rows, date)
+    return render_template('_dropped_batting.html',
+        rows=rows,
+        ages=ages)
+
+@app.route('/upcomingfa/pitching')
+def upcoming_fa_pitching():
+    date_id, date = get_date()
+
+    cur = g.db.cursor()
+    cur.execute('''
+        select
+          p.name, p.position, p.birthday, pr.*,
+          pr.stuff + pr.movement + pr.control as overall
+        from pitching_ratings pr
+        left join pitching_ratings pr_later
+          on pr_later.player_id = pr.player_id
+          and pr_later.date_id > pr.date_id
+        join players p on pr.player_id = p.id
+        join upcoming_fa ufa on ufa.player_id = pr.player_id
+        and pr_later.player_id is null
+        order by overall desc
+        ''')
+    rows = cur.fetchall()
+    ages = get_ages_from_rows(rows, date)
+    return render_template('_dropped_pitching.html',
+        rows=rows,
+        ages=ages)
+
 @app.route('/search/')
 def search():
     cols = [

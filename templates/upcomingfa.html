@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% set title = 'Upcoming FA' %}
+{% block content %}
+  <div id="upcoming-fa-batting-ratings"></div>
+  <div id="upcoming-fa-pitching-ratings"></div>
+
+  <script>
+  $(function() {
+    $.get('/upcomingfa/batting', function(html) {
+        $('#upcoming-fa-batting-ratings').html(html);
+      });
+    $.get('/upcomingfa/pitching', function(html) {
+        $('#upcoming-fa-pitching-ratings').html(html);
+      });
+  });
+  </script>
+{% endblock %}

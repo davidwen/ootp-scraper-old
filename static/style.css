@@ -89,6 +89,8 @@ nav .filter {
 #dropped-pitching-ratings,
 #waivers-batting-ratings,
 #waivers-pitching-ratings,
+#upcoming-fa-batting-ratings,
+#upcoming-fa-pitching-ratings,
 #search-table {
   margin-bottom: 50px; }
   #team-batting-ratings .subheader td,
@@ -99,6 +101,8 @@ nav .filter {
   #dropped-pitching-ratings .subheader td,
   #waivers-batting-ratings .subheader td,
   #waivers-pitching-ratings .subheader td,
+  #upcoming-fa-batting-ratings .subheader td,
+  #upcoming-fa-pitching-ratings .subheader td,
   #search-table .subheader td {
     font-weight: bold;
     vertical-align: middle; }
@@ -110,6 +114,8 @@ nav .filter {
   #dropped-pitching-ratings td,
   #waivers-batting-ratings td,
   #waivers-pitching-ratings td,
+  #upcoming-fa-batting-ratings td,
+  #upcoming-fa-pitching-ratings td,
   #search-table td {
     font-size: 11px; }
     #team-batting-ratings td.player-name, #team-batting-ratings td.ml-team-name, #team-batting-ratings td.player-age,
@@ -134,6 +140,12 @@ nav .filter {
     #waivers-pitching-ratings td.player-name,
     #waivers-pitching-ratings td.ml-team-name,
     #waivers-pitching-ratings td.player-age,
+    #upcoming-fa-batting-ratings td.player-name,
+    #upcoming-fa-batting-ratings td.ml-team-name,
+    #upcoming-fa-batting-ratings td.player-age,
+    #upcoming-fa-pitching-ratings td.player-name,
+    #upcoming-fa-pitching-ratings td.ml-team-name,
+    #upcoming-fa-pitching-ratings td.player-age,
     #search-table td.player-name,
     #search-table td.ml-team-name,
     #search-table td.player-age {
