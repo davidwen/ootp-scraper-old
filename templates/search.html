@@ -106,6 +106,7 @@
 
     $('.submit-btn').click(function() {
       var cols = [];
+
       var pitching = true;
       var batting = true;
       $('option.column').each(function() {
@@ -118,6 +119,7 @@
           }
         }
       });
+
       var filters = [];
       $('.filter-container .row').each(function() {
         if ($(this).find('.val').val()) {
@@ -128,10 +130,12 @@
           filters.push(filter.join(':'));
         }
       });
+
       var start = Number($('.start').text()) - 1;
       var limit = $('.limit').val();
       var sortcol = $('th.sorted').text();
       var sortdir = $('th.sorted').hasClass('reverse') ? 'desc' : 'asc';
+
       $.ajax({
         type: 'GET',
         url: 'table',
