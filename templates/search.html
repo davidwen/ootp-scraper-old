@@ -120,7 +120,7 @@
       });
       var filters = [];
       $('.filter-container .row').each(function() {
-        if ($(this).find('.val')) {
+        if ($(this).find('.val').val()) {
           var filter = [
             $(this).find('.attr').val(),
             $(this).find('.comp').val(),
