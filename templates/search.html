@@ -38,7 +38,7 @@
       <strong class="control-header">Filters:</strong>
       <div class="row">
         <div class="col-sm-2">
-          <select class="multiselect multiselect-wide">
+          <select class="multiselect multiselect-wide attr">
             {% for col in cols %}
               {% for c in col[1] %}
                 <option value="{{c}}">{{c}}</option>
@@ -47,7 +47,7 @@
           </select>
         </div>
         <div class="col-sm-2">
-          <select class="multiselect multiselect-wide">
+          <select class="multiselect multiselect-wide comp">
             <option value="gt">greater than</option>
             <option value="lt">less than</option>
             <option value="eq">equal to</option>
@@ -118,6 +118,16 @@
           }
         }
       });
+      var filters = [];
+      $('.filter-container .row').each(function() {
+        if ($(this).find('.val')) {
+          var filter = [
+            $(this).find('.attr').val(),
+            $(this).find('.comp').val(),
+            $(this).find('.val').val()];
+          filters.push(filter.join(':'));
+        }
+      });
       var start = Number($('.start').text()) - 1;
       var limit = $('.limit').val();
       var sortcol = $('th.sorted').text();
@@ -132,7 +142,8 @@
           start: start,
           limit: limit,
           sortcol: sortcol,
-          sortdir: sortdir
+          sortdir: sortdir,
+          filters: filters
         },
         success: function(html) {
           $('#search-table').html(html);

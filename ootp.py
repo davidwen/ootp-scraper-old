@@ -15,6 +15,12 @@ RATINGS = {
     1: 'Very Low'
 }
 
+COMPARATORS = {
+    'gt': '>',
+    'lt': '<',
+    'eq': '='
+}
+
 def connect_db():
     db = sqlite3.connect(DATABASE)
     db.row_factory = sqlite3.Row
@@ -640,23 +646,21 @@ def search_table():
         where = 'and position in ("SP", "MR") '
     elif batting == 'true' and pitching == 'false':
         where = 'and position not in ("SP", "MR") '
+    for f in request.args.getlist('filters[]'):
+        f_parts = f.split(':')
+        where += 'and %s %s %s ' % (f_parts[0], COMPARATORS[f_parts[1]], f_parts[2])
     order_by = ''
     if sortcol != '' and sortcol is not None:
-        if sortcol == 'age':
-            sortcol = 'birthday'
-            if sortdir == 'desc':
-                sortdir = 'asc'
-            else:
-                sortdir = 'desc'
         order_by = str.format('order by {0} ', sortcol)
         if sortdir == 'desc':
             order_by += 'desc '
         if sortcol != 'name':
             order_by += ', name '
     date_id, date = get_date()
+    age_sql = '(julianday("%s") - julianday(birthday)) / 365 as age ' % date
     cur = g.db.cursor()
     sql = '''
-        select p.*, br.*, rr.*, pr.*, fr.*, posr.*
+        select p.*, br.*, rr.*, pr.*, fr.*, posr.*, ''' + age_sql + '''
         from players p
         left join batting_ratings br on p.id = br.player_id
         left join batting_ratings br_later
@@ -689,12 +693,6 @@ def search_table():
     total = cur.fetchone()[0]
     ages = get_ages_from_rows(rows, date)
     col_classes = {'name': 'player-name'}
-    if sortcol == 'birthday':
-        sortcol = 'age'
-        if sortdir == 'desc':
-            sortdir = 'asc'
-        else:
-            sortdir = 'desc'
     return render_template('_search.html',
         rows=rows,
         cols=cols,
