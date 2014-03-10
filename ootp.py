@@ -392,7 +392,7 @@ def top_improvers_pitching():
         where pr_earlier.date_id is null
         group by pr.player_id
         '''
-    return top_improvers_bp(max_age, min_imp, sql, prev_sql, '_improvers_pitching.html')
+    return top_improvers_bp(max_age, min_imp, team, sql, prev_sql, '_improvers_pitching.html')
 
 def top_improvers_bp(max_age, min_imp, team, sql, prev_sql, template):
     date_id, date = get_date()
