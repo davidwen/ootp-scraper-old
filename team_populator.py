@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from contextlib import closing
 
 DATABASE = 'wbh.db'
-ROOT = '/Users/davidwen/Library/Application Support/Out of the Park Developments/OOTP Baseball 14/saved_games/WBH.lg/news/almanac_2034'
+ROOT = '/Users/davidwen/Library/Application Support/Out of the Park Developments/OOTP Baseball 14/saved_games/WBH.lg/news/almanac_2035'
 
 class TeamPopulator:
     def __init__(self):
