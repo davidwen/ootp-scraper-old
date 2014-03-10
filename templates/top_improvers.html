@@ -17,6 +17,12 @@
           <input type="number" id="min-imp" name="minimp" class="form-control">
         </div>
       </div>
+      <div class="form-group">
+        <label for="team" class="col-sm-6 control-label">Team ID:</label>
+        <div class="col-sm-6">
+          <input type="number" id="team" name="team" class="form-control">
+        </div>
+      </div>
       <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
     </form>
   </div>
@@ -30,12 +36,14 @@
     $('#max-age-form').submit(function() {
       var maxAge = $(this).find('input[name=maxage]').val();
       var minImp = $(this).find('input[name=minimp]').val();
+      var team = $(this).find('input[name=team]').val();
       if (!maxAge) maxAge = 99;
       if (!minImp) minImp = 1;
+      if (!team) team = 0;
       $.ajax({
         type: 'GET',
         url: battingUrl,
-        data: {maxage: maxAge, minimp: minImp},
+        data: {maxage: maxAge, minimp: minImp, team: team},
         success: function(html) {
           $('#improved-batting-ratings').html(html);
         }
@@ -43,7 +51,7 @@
       $.ajax({
         type: 'GET',
         url: pitchingUrl,
-        data: {maxage: maxAge, minimp: minImp},
+        data: {maxage: maxAge, minimp: minImp, team: team},
         success: function(html) {
           $('#improved-pitching-ratings').html(html);
         }
