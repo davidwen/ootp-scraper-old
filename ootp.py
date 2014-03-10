@@ -323,7 +323,8 @@ def top_improvers_batting():
     team = int(request.args.get('team', '0'))
     sql = '''
         select
-          p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, br.*,
+          p.name, p.position, p.birthday, t.level, br.*,
+          parent_team.name as ml_team, parent_team.id as ml_team_id,
           br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential
         from batting_ratings br
         left join batting_ratings br_later
@@ -334,12 +335,12 @@ def top_improvers_batting():
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where br_later.player_id is null
-        and (? = 0 or ? = t.id)
         group by br.player_id
         '''
     prev_sql = '''
         select
-          p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, br.*,
+          p.name, p.position, p.birthday, t.level, br.*,
+          parent_team.name as ml_team, parent_team.id as ml_team_id,
           br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential
         from batting_ratings br
         left join batting_ratings br_earlier
@@ -350,7 +351,6 @@ def top_improvers_batting():
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where br_earlier.player_id is null
-        and (? = 0 or ? = t.id)
         group by br.player_id
         '''
     return top_improvers_bp(max_age, min_imp, team, sql, prev_sql, '_improvers_batting.html')
@@ -362,7 +362,8 @@ def top_improvers_pitching():
     team = int(request.args.get('team', '0'))
     sql = '''
         select
-          p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, pr.*,
+          p.name, p.position, p.birthday, t.level, pr.*,
+          parent_team.name as ml_team, parent_team.id as ml_team_id,
           pr.pot_stuff + pr.pot_movement + pr.pot_control as potential
         from pitching_ratings pr
         left join pitching_ratings pr_later
@@ -373,12 +374,12 @@ def top_improvers_pitching():
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where pr_later.date_id is null
-        and (? = 0 or ? = t.id)
         group by pr.player_id
         '''
     prev_sql = '''
         select
-          p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, pr.*,
+          p.name, p.position, p.birthday, t.level, pr.*,
+          parent_team.name as ml_team, parent_team.id as ml_team_id,
           pr.pot_stuff + pr.pot_movement + pr.pot_control as potential
         from pitching_ratings pr
         left join pitching_ratings pr_earlier
@@ -389,7 +390,6 @@ def top_improvers_pitching():
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where pr_earlier.date_id is null
-        and (? = 0 or ? = t.id)
         group by pr.player_id
         '''
     return top_improvers_bp(max_age, min_imp, sql, prev_sql, '_improvers_pitching.html')
@@ -403,7 +403,7 @@ def top_improvers_bp(max_age, min_imp, team, sql, prev_sql, template):
     prev_ratings = {}
     diff_classes = {}
     ids = []
-    for prev_player in cur.execute(prev_sql, (team, team)):
+    for prev_player in cur.execute(prev_sql):
         player_id = prev_player['player_id']
         player = ratings[player_id]
         if player['potential'] > prev_player['potential']:
@@ -418,6 +418,8 @@ def top_improvers_bp(max_age, min_imp, team, sql, prev_sql, template):
     ages = get_ages(ratings, date)
     ids = [id[1] for id in sorted(ids, key=lambda id: id[0], reverse=True) if ages[id[1]] < max_age]
     ids = [id for id in ids if (ratings[id]['potential'] - prev_ratings[id]['potential']) >= min_imp]
+    if team != 0:
+        ids = [id for id in ids if ratings[id]['ml_team_id'] == team]
 
     return render_template(template,
         ids=ids,
