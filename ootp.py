@@ -712,6 +712,79 @@ def search_table():
         sortcol=sortcol,
         sortdir=sortdir)
 
+@app.route('/stats/batting/')
+def batting_stats():
+    return render_template('stats.html',
+        batting=True,
+        default_min=500)
+
+@app.route('/stats/pitching/')
+def pitching_stats():
+    return render_template('stats.html',
+        batting=False,
+        default_min=200)
+
+@app.route('/stats/batting/table')
+def batting_stats_table():
+    cols = [
+        'name', 'g', 'ab', 'h', 'double', 'triple', 'hr',
+        'rbi', 'r', 'bb', 'hp', 'sf', 'k', 'sb', 'cs',
+        'vorp', 'war', 'avg', 'obp', 'slg', 'ops'
+    ]
+    decimal3 = set(['avg', 'obp', 'slg', 'ops'])
+    filter_ = 'where ab > %d ' % int(request.args.get('min'))
+    return stats_table(cols, 'batting_stats', filter_, set(), decimal3)
+
+@app.route('/stats/pitching/table')
+def pitching_stats_table():
+    cols = [
+        'name', 'g', 'gs', 'w', 'l', 'sv',
+        'ip', 'ha', 'r', 'er', 'hr', 'bb', 'k',
+        'cg', 'sho', 'vorp', 'war', 'era', 'whip'
+    ]
+    decimal2 = set(['era', 'whip'])
+    filter_ = 'where ip > %d ' % int(request.args.get('min'))
+    return stats_table(cols, 'pitching_stats', filter_, decimal2, set())
+
+def stats_table(cols, table_name, filter_, decimal2, decimal3):
+    start = int(request.args.get('start', 0))
+    limit = int(request.args.get('limit', 25))
+    end = start + limit
+    sortcol = request.args.get('sortcol', None)
+    if sortcol == '2b':
+        sortcol = 'double'
+    elif sortcol == '3b':
+        sortcol = 'triple'
+    sortdir = request.args.get('sortdir', None)
+    min_ = int(request.args.get('min'))
+
+    order_by = ''
+    if sortcol != '' and sortcol is not None:
+        order_by = str.format('order by {0} ', sortcol)
+        if sortdir == 'desc':
+            order_by += 'desc '
+        if sortcol != 'name':
+            order_by += ', name '
+    cur = g.db.cursor()
+    sql = 'select * from %s %s %s ' % (table_name, filter_, order_by)
+    cur.execute(sql + str.format('limit {0}, {1}', start, limit))
+    rows = cur.fetchall()
+    cur.execute('select count(*) from (' + sql + ') s')
+    total = cur.fetchone()[0]
+    col_classes = {'name': 'player-name'}
+    return render_template('_stats_table.html',
+        rows=rows,
+        cols=cols,
+        col_classes=col_classes,
+        total=total,
+        start=start + 1,
+        end=min(end, total),
+        min=min_,
+        sortcol=sortcol,
+        sortdir=sortdir,
+        decimal2=decimal2,
+        decimal3=decimal3)
+
 def get_date(date_id=None):
     sql = 'select * from dates '
     params = []

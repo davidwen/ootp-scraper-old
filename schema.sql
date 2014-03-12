@@ -136,3 +136,54 @@ CREATE TABLE IF NOT EXISTS upcoming_fa(
     player_id INTEGER,
     PRIMARY KEY (player_id)
 )
+
+CREATE TABLE IF NOT EXISTS batting_stats(
+    player_id INTEGER,
+    name TEXT,
+    position TEXT,
+    g INTEGER,
+    ab INTEGER,
+    h INTEGER,
+    double INTEGER,
+    triple INTEGER,
+    hr INTEGER,
+    rbi INTEGER,
+    r INTEGER,
+    bb INTEGER,
+    hp INTEGER,
+    sf INTEGER,
+    k INTEGER,
+    sb INTEGER,
+    cs INTEGER,
+    vorp REAL,
+    war REAL,
+    avg REAL,
+    obp REAL,
+    slg REAL,
+    ops REAL,
+    PRIMARY KEY (player_id)
+)
+
+CREATE TABLE IF NOT EXISTS pitching_stats(
+    player_id INTEGER,
+    name TEXT,
+    g INTEGER,
+    gs INTEGER,
+    w INTEGER,
+    l INTEGER,
+    sv INTEGER,
+    ip INTEGER,
+    ha INTEGER,
+    r INTEGER,
+    er INTEGER,
+    hr INTEGER,
+    bb INTEGER,
+    k INTEGER,
+    cg INTEGER,
+    sho INTEGER,
+    vorp REAL,
+    war REAL,
+    era REAL,
+    whip REAL,
+    PRIMARY KEY (player_id)
+)

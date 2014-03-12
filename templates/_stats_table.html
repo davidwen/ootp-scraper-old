@@ -1,0 +1,44 @@
+<input type="hidden" name="total" value="{{total}}">
+<input type="hidden" name="start" value="{{start}}">
+<input type="hidden" name="end" value="{{end}}">
+<input type="hidden" name="min" value="{{min}}">
+<table class="table ratings-table table-condensed">
+  <thead>
+    <tr class="subheader search-subheader">
+      {% for col in cols %}
+        <th class="{{col_classes[col]}} {% if col == sortcol %}sorted {% if sortdir == 'asc' %}reverse{% endif %}{% endif %}">
+          {% if col == 'double' %}
+            2B
+          {% elif col == 'triple' %}
+            3B
+          {% else %}
+            {% filter upper %}
+              {{col}}
+            {% endfilter %}
+          {% endif %}
+        </th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+      <tr>
+        {% for col in cols %}
+          {% if col == 'name' %}
+            <td class="player-name"><a href="http://worldbaseballhierarchy.com/lgreports/news/html/players/player_{{row.player_id}}.html">{{row.position}} {{row.name}}</a></td>
+          {% else %}
+            <td class="{{col_classes[col]}}">
+              {% if col in decimal3 %}
+                {{'{0:.3f}'.format(row[col])}}</td>
+              {% elif col in decimal2 %}
+                {{'{0:.2f}'.format(row[col])}}</td>
+              {% else %}
+                {{row[col]}}
+              {% endif %}
+            </td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

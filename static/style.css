@@ -2,6 +2,9 @@ body {
   background-color: #eee;
   padding-top: 70px; }
 
+body.no-nav {
+  padding-top: 0; }
+
 a {
   color: #333; }
 
@@ -91,7 +94,8 @@ nav .filter {
 #waivers-pitching-ratings,
 #upcoming-fa-batting-ratings,
 #upcoming-fa-pitching-ratings,
-#search-table {
+#search-table,
+#stats-table {
   margin-bottom: 50px; }
   #team-batting-ratings .subheader td,
   #team-pitching-ratings .subheader td,
@@ -103,7 +107,8 @@ nav .filter {
   #waivers-pitching-ratings .subheader td,
   #upcoming-fa-batting-ratings .subheader td,
   #upcoming-fa-pitching-ratings .subheader td,
-  #search-table .subheader td {
+  #search-table .subheader td,
+  #stats-table .subheader td {
     font-weight: bold;
     vertical-align: middle; }
   #team-batting-ratings td,
@@ -116,7 +121,8 @@ nav .filter {
   #waivers-pitching-ratings td,
   #upcoming-fa-batting-ratings td,
   #upcoming-fa-pitching-ratings td,
-  #search-table td {
+  #search-table td,
+  #stats-table td {
     font-size: 11px; }
     #team-batting-ratings td.player-name, #team-batting-ratings td.ml-team-name, #team-batting-ratings td.player-age,
     #team-pitching-ratings td.player-name,
@@ -148,10 +154,18 @@ nav .filter {
     #upcoming-fa-pitching-ratings td.player-age,
     #search-table td.player-name,
     #search-table td.ml-team-name,
-    #search-table td.player-age {
+    #search-table td.player-age,
+    #stats-table td.player-name,
+    #stats-table td.ml-team-name,
+    #stats-table td.player-age {
       font-size: 13px;
       text-align: left;
       vertical-align: middle; }
+
+#stats-table td {
+  text-align: left; }
+#stats-table th.player-name {
+  width: 300px; }
 
 #team-batting-ratings tr:nth-child(odd), #team-batting-ratings table,
 #team-pitching-ratings tr:nth-child(odd),
@@ -174,17 +188,26 @@ nav .filter {
   color: red;
   text-decoration: underline; }
 
-.search-container .control-header {
+.search-container .control-header, .stats-container .control-header {
   width: 200px; }
-.search-container .filter-container {
+.search-container .filter-container, .stats-container .filter-container {
   margin-bottom: 25px; }
-  .search-container .filter-container .val {
+  .search-container .filter-container .val, .stats-container .filter-container .val {
     height: 34px; }
-.search-container .table-controls {
+.search-container .table-controls, .stats-container .table-controls {
   margin-bottom: 25px; }
-  .search-container .table-controls .submit-btn {
+  .search-container .table-controls .submit-btn, .stats-container .table-controls .submit-btn {
     margin-left: 25px; }
-  .search-container .table-controls .glyphicon {
+  .search-container .table-controls .glyphicon, .stats-container .table-controls .glyphicon {
     font-size: 10px; }
-  .search-container .table-controls .limit-container {
+  .search-container .table-controls .limit-container, .stats-container .table-controls .limit-container {
     margin-right: 25px; }
+.search-container #min, .stats-container #min {
+  height: 34px;
+  padding: 5px;
+  margin-left: 5px;
+  width: 60px; }
+.search-container .link-container, .stats-container .link-container {
+  margin-bottom: 20px; }
+  .search-container .link-container a, .stats-container .link-container a {
+    color: #428bca; }

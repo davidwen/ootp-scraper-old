@@ -3,6 +3,10 @@ body {
     padding-top: 70px;
 }
 
+body.no-nav {
+    padding-top: 0;
+}
+
 a {
     color: #333;
 }
@@ -143,7 +147,8 @@ nav {
 #waivers-pitching-ratings,
 #upcoming-fa-batting-ratings,
 #upcoming-fa-pitching-ratings,
-#search-table {
+#search-table,
+#stats-table {
     margin-bottom: 50px;
 
     .subheader td {
@@ -159,6 +164,16 @@ nav {
             text-align: left;
             vertical-align: middle;
         }
+    }
+}
+
+#stats-table {
+    td {
+        text-align: left;
+    }
+
+    th.player-name {
+        width: 300px;
     }
 }
 
@@ -182,7 +197,7 @@ nav {
     }
 }
 
-.search-container {
+.search-container, .stats-container {
     .control-header {
         width: 200px;
     }
@@ -209,5 +224,19 @@ nav {
         .limit-container {
             margin-right: 25px;
         }
+    }
+
+    #min {
+        height: 34px;
+        padding: 5px;
+        margin-left: 5px;
+        width: 60px;
+    }
+
+    .link-container {
+        a {
+            color: #428bca;
+        }
+        margin-bottom: 20px;
     }
 }
