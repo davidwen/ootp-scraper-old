@@ -25,12 +25,14 @@ class Scraper:
         self.run_ratings = {}
         self.fielding_ratings = {}
         self.position_ratings = {}
+        self.existing_players = set()
         with closing(sqlite3.connect(DATABASE)) as db:
             self.populate_batting_ratings(db)
             self.populate_pitching_ratings(db)
             self.populate_run_ratings(db)
             self.populate_fielding_ratings(db)
             self.populate_position_ratings(db)
+            self.populate_existing_players(db)
 
     def populate_batting_ratings(self, db):
         cur = db.cursor()
@@ -119,6 +121,12 @@ class Scraper:
         for row in cur.fetchall():
             self.position_ratings[row[0]] = [row[i] for i in range(1, len(row))]
 
+    def populate_existing_players(self, db):
+        cur = db.cursor()
+        cur.execute('select id from players')
+        for row in cur.fetchall():
+            self.existing_players.add(row[0])
+
     def scrape(self):
         with closing(sqlite3.connect(DATABASE)) as db:
             for dirname, dirnames, filenames in os.walk(ROOT + '/players'):
@@ -170,12 +178,14 @@ class Scraper:
                 insert or ignore into players
                 (id, name, birthday, leadership, loyalty, desire_for_win, greed, intelligence, work_ethic, bats, throws, position)
                 values
-                (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (player_id, name, birthday, leadership, loyalty, desire_for_win, greed, intelligence, work_ethic, bats, throws, position))
             db.commit()
 
     def read_player_file(self, db, player_id, filename):
         print player_id
+        if player_id not in self.existing_players:
+            self.read_initial_player_file(db, player_id, filename)
         with open(filename, 'rb') as f:
             soup = BeautifulSoup(f.read())
             cur = db.cursor()
