@@ -202,6 +202,10 @@ nav .filter {
     font-size: 10px; }
   .search-container .table-controls .limit-container, .stats-container .table-controls .limit-container {
     margin-right: 25px; }
+    .search-container .table-controls .limit-container .btn-group, .stats-container .table-controls .limit-container .btn-group {
+      margin: 0 5px; }
+  .search-container .table-controls .total, .stats-container .table-controls .total {
+    margin-right: 5px; }
 .search-container #min, .stats-container #min {
   height: 34px;
   padding: 5px;
