@@ -175,6 +175,10 @@ nav {
     th.player-name {
         width: 300px;
     }
+
+    th {
+        cursor: pointer;
+    }
 }
 
 #team-batting-ratings,

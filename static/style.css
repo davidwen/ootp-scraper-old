@@ -166,6 +166,8 @@ nav .filter {
   text-align: left; }
 #stats-table th.player-name {
   width: 300px; }
+#stats-table th {
+  cursor: pointer; }
 
 #team-batting-ratings tr:nth-child(odd), #team-batting-ratings table,
 #team-pitching-ratings tr:nth-child(odd),
