@@ -161,6 +161,9 @@ CREATE TABLE IF NOT EXISTS batting_stats(
     obp REAL,
     slg REAL,
     ops REAL,
+    babip REAL,
+    krate REAL,
+    bbrate REAL,
     PRIMARY KEY (player_id)
 )
 

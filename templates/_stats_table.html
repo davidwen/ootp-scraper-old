@@ -11,6 +11,10 @@
             2B
           {% elif col == 'triple' %}
             3B
+          {% elif col == 'krate' %}
+            K%
+          {% elif col == 'bbrate' %}
+            BB%
           {% else %}
             {% filter upper %}
               {{col}}

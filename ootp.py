@@ -729,7 +729,7 @@ def batting_stats_table():
     cols = [
         'name', 'g', 'ab', 'h', 'double', 'triple', 'hr',
         'rbi', 'r', 'bb', 'hp', 'sf', 'k', 'sb', 'cs',
-        'vorp', 'war', 'avg', 'obp', 'slg', 'ops'
+        'vorp', 'war', 'avg', 'obp', 'slg', 'ops', 'babip', 'krate', 'bbrate'
     ]
     decimal3 = set(['avg', 'obp', 'slg', 'ops'])
     filter_ = 'where ab > %d ' % int(request.args.get('min'))
@@ -755,6 +755,10 @@ def stats_table(cols, table_name, filter_, decimal2, decimal3):
         sortcol = 'double'
     elif sortcol == '3b':
         sortcol = 'triple'
+    elif sortcol == 'k%':
+        sortcol = 'krate'
+    elif sortcol == 'bb%':
+        sortcol = 'bbrate'
     sortdir = request.args.get('sortdir', None)
     min_ = int(request.args.get('min'))
 

@@ -172,8 +172,21 @@ def compile_pitching_stats(result):
 def batting_stats(db, soup, player_id):
     name = soup.find('div', class_='reptitle').text
     name = name[name.find(' ') + 1:name.find('#') - 1].strip()
-    data_line = soup.find(text=re.compile('BATS:'))
-    position = data_line.split(' ')[0]
+    
+    fielding_header = soup.find(text=re.compile('CAREER FIELDING STATS'))
+    fielding_table = fielding_header.find_parents('table')[0].find_next_sibling()
+    rows = fielding_table.find_all('tr', class_='hsi')
+    best = (None, 0)
+    for row in rows:
+        values = [th.string for th in row.find_all('th')]
+        games = int(values[2])
+        position = values[1]
+        if games > best[1]:
+            best = (position, games)
+    position = best[0]
+    if position is None:
+        data_line = soup.find(text=re.compile('BATS:'))
+        position = data_line.split(' ')[0]
 
     header_table = soup.find(text=re.compile('Career Batting Stats'))
     table = header_table.find_parents('table')[0].find_next_sibling()
@@ -191,12 +204,15 @@ def batting_stats(db, soup, player_id):
     cur = db.cursor()
     cur.execute('''
         insert or replace into batting_stats
-        (player_id, name, position, g, ab, h, double, triple, hr, rbi, r, bb, hp, sf, k, sb, cs, vorp, war, avg, obp, slg, ops)
+        (player_id, name, position,
+         g, ab, h, double, triple, hr,
+         rbi, r, bb, hp, sf, k, sb, cs,
+         vorp, war, avg, obp, slg, ops, babip, krate, bbrate)
         values
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (player_id, name, position, result['G'], result['AB'], result['H'], result['_2B'], result['_3B'], result['HR'],
-              result['RBI'], result['R'], result['BB'], result['HP'], result['SF'], result['K'], result['SB'],
-              result['CS'], result['VORP'], result['WAR'], result['AVG'], result['OBP'], result['SLG'], result['OPS']))
+              result['RBI'], result['R'], result['BB'], result['HP'], result['SF'], result['K'], result['SB'], result['CS'],
+              result['VORP'], result['WAR'], result['AVG'], result['OBP'], result['SLG'], result['OPS'], result['BABIP'], result['K%'], result['BB%']))
     db.commit()
 
 def add_batting_stats(result, values):
@@ -216,10 +232,17 @@ def compile_batting_stats(result):
     HP = result['HP']
     SF = result['SF']
     K = result['K']
+    PA = AB + BB + HP + SF
     result['AVG'] = round(float(H) / AB, 3)
     result['OBP'] = round(float(H + BB + HP) / (AB + BB + HP + SF), 3)
     result['SLG'] = round((H + _2B + (2 * _3B) + (3 * HR)) / float(AB), 3)
     result['OPS'] = round(result['OBP'] + result['SLG'], 3)
+    if AB - K - HR + SF > 0:
+        result['BABIP'] = round(float(H - HR) / (AB - K - HR + SF), 3)
+    else:
+        result['BABIP'] = 0
+    result['K%'] = round(float(K) / PA, 2)
+    result['BB%'] = round(float(BB) / PA, 2)
 
 if __name__ == '__main__':
     scrape()
