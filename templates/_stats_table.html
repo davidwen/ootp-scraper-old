@@ -37,7 +37,9 @@
             </td>
           {% else %}
             <td class="{{col_classes[col]}}">
-              {% if col in decimal3 %}
+              {% if col.endswith('rate') %}
+                {{(row[col] * 100)|int}}
+              {% elif col in decimal3 %}
                 {{'{0:.3f}'.format(row[col])}}</td>
               {% elif col in decimal2 %}
                 {{'{0:.2f}'.format(row[col])}}</td>
