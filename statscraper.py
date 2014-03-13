@@ -119,7 +119,9 @@ def scrape():
 def pitching_stats(db, soup, player_id):
     name = soup.find('div', class_='reptitle').text
     name = name[name.find(' ') + 1:name.find('#') - 1].strip()
-    table = soup.find_all('table', class_='sortable')[1]
+
+    header_table = soup.find(text=re.compile('Career Pitching Stats'))
+    table = header_table.find_parents('table')[0].find_next_sibling()
     rows = table.find_all('tr', class_='hsx')
     if len(rows) == 0:
         return
@@ -140,6 +142,7 @@ def pitching_stats(db, soup, player_id):
         ''', (player_id, name, result['G'], result['GS'], result['W'], result['L'], result['SV'], result['IP'],
               result['HA'], result['R'], result['ER'], result['HR'], result['BB'], result['K'], result['CG'],
               result['SHO'], result['VORP'], result['WAR'], result['ERA'], result['WHIP']))
+    db.commit()
 
 def add_pitching_stats(result, values):
     for key in PITCHING_STATS:
