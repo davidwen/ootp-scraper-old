@@ -5,6 +5,7 @@
 <table class="table ratings-table table-condensed">
   <thead>
     <tr class="subheader search-subheader">
+      <th>Rank</th>
       {% for col in cols %}
         <th class="{{col_classes[col]}} {% if col == sortcol %}sorted {% if sortdir == 'asc' %}reverse{% endif %}{% endif %}">
           {% if col == 'double' %}
@@ -25,8 +26,10 @@
     </tr>
   </thead>
   <tbody>
+    {% set rank = start %}
     {% for row in rows %}
       <tr>
+        <th>{{rank}}{% set rank = rank + 1 %}</th>
         {% for col in cols %}
           {% if col == 'name' %}
             <td class="player-name">
