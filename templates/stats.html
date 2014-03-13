@@ -51,11 +51,22 @@
           <div class="clearfix"></div>
         </div>
         <div class="key-container">
-          <strong>Key:</strong>
-          <span class="hall-of-fame">Hall of Fame</span>
-          <span class="eligible">Eligible for Hall of Fame</span>
-          <span class="active">Active</span>
-          <span class="retired">Retired</span>
+          <label class="hall-of-fame">
+            Hall of Fame
+            <input type="checkbox" name="showhof" value="true" checked>
+          </label>
+          <label class="eligible">
+            Eligible for Hall of Fame
+            <input type="checkbox" name="showeligible" value="true" checked>
+          </label>
+          <label class="active">
+            Active
+            <input type="checkbox" name="showactive" value="true" checked>
+          </label>
+          <label class="retired">
+            Retired
+            <input type="checkbox" name="showretired" value="true" checked>
+          </label>
         </div>
         <div id="stats-table"></div>
       </div>
@@ -97,12 +108,20 @@
       $('.submit-btn').click();
     });
 
+    $('.key-container input').change(function() {
+      $('.submit-btn').click();
+    })
+
     $('.submit-btn').click(function() {
       var start = Number($('.start').text()) - 1;
       var limit = $('.limit').val();
       var sortcol = $('th.sorted').text().trim().toLowerCase();
       var sortdir = $('th.sorted').hasClass('reverse') ? 'asc' : 'desc';
       var min = $('#min').val();
+      var showhof = $('input[name=showhof]').is(':checked');
+      var showeligible = $('input[name=showeligible]').is(':checked');
+      var showactive = $('input[name=showactive]').is(':checked');
+      var showretired = $('input[name=showretired]').is(':checked');
 
       $.ajax({
         type: 'GET',
@@ -112,7 +131,11 @@
           limit: limit,
           sortcol: sortcol,
           sortdir: sortdir,
-          min: min
+          min: min,
+          showhof: showhof,
+          showeligible: showeligible,
+          showactive: showactive,
+          showretired: showretired
         },
         success: function(html) {
           $('#stats-table').html(html);

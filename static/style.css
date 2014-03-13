@@ -221,9 +221,11 @@ nav .filter {
     color: #428bca; }
 .search-container .key-container, .stats-container .key-container {
   margin-bottom: 10px; }
-  .search-container .key-container span, .stats-container .key-container span {
+  .search-container .key-container label, .stats-container .key-container label {
     display: inline-block;
     margin-right: 15px; }
+    .search-container .key-container label.retired, .stats-container .key-container label.retired {
+      font-weight: normal; }
 .search-container .hall-of-fame, .stats-container .hall-of-fame {
   color: #c68e17;
   font-weight: bold; }

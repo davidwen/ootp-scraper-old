@@ -258,9 +258,13 @@ nav {
     .key-container {
         margin-bottom: 10px;
 
-        span {
+        label {
             display: inline-block;
             margin-right: 15px;
+
+            &.retired {
+                font-weight: normal;
+            }
         }
     }
 

@@ -761,6 +761,23 @@ def stats_table(cols, table_name, filter_, decimal2, decimal3):
         sortcol = 'bbrate'
     sortdir = request.args.get('sortdir', None)
     min_ = int(request.args.get('min'))
+    show_filters = []
+    if request.args.get('showhof') != 'false':
+        show_filters.append('is_hof')
+    else:
+        filter_ += 'and is_hof = 0 '
+    if request.args.get('showeligible') != 'false':
+        show_filters.append('is_eligible')
+    else:
+        filter_ += 'and is_eligible = 0 '
+    if request.args.get('showactive') != 'false':
+        show_filters.append('is_active')
+    if request.args.get('showretired') != 'false':
+        show_filters.append('is_retired')
+    if len(show_filters):
+        filter_ += 'and (' + ' or '.join(show_filters) + ') '
+    else:
+        filter_ += 'and 0 '
 
     order_by = ''
     if sortcol != '' and sortcol is not None:
@@ -774,7 +791,8 @@ def stats_table(cols, table_name, filter_, decimal2, decimal3):
         select s.*,
                hof.player_id IS NOT NULL as is_hof,
                e.player_id IS NOT NULL as is_eligible,
-               p.id IS NOT NULL as is_active
+               p.id IS NOT NULL as is_active,
+               p.id IS NULL as is_retired
         from %s s
         left join hall_of_fame hof on hof.player_id = s.player_id
         left join hall_of_fame_eligible e on e.player_id = s.player_id
