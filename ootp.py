@@ -731,7 +731,7 @@ def batting_stats_table():
         'rbi', 'r', 'bb', 'hp', 'sf', 'k', 'sb', 'cs',
         'vorp', 'war', 'avg', 'obp', 'slg', 'ops', 'babip', 'krate', 'bbrate'
     ]
-    decimal3 = set(['avg', 'obp', 'slg', 'ops'])
+    decimal3 = set(['avg', 'obp', 'slg', 'ops', 'babip'])
     filter_ = 'where ab > %d ' % int(request.args.get('min'))
     return stats_table(cols, 'batting_stats', filter_, set(), decimal3)
 
