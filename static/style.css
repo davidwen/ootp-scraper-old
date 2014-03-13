@@ -168,6 +168,8 @@ nav .filter {
   width: 300px; }
 #stats-table th {
   cursor: pointer; }
+  #stats-table th:hover:not(.sorted) {
+    color: #888; }
 
 #team-batting-ratings tr:nth-child(odd), #team-batting-ratings table,
 #team-pitching-ratings tr:nth-child(odd),

@@ -178,6 +178,9 @@ nav {
 
     th {
         cursor: pointer;
+        &:hover:not(.sorted) {
+            color: #888;
+        }
     }
 }
 
