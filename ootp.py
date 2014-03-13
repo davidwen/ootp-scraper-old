@@ -766,7 +766,16 @@ def stats_table(cols, table_name, filter_, decimal2, decimal3):
         if sortcol != 'name':
             order_by += ', name '
     cur = g.db.cursor()
-    sql = 'select * from %s %s %s ' % (table_name, filter_, order_by)
+    sql = '''
+        select s.*,
+               hof.player_id IS NOT NULL as is_hof,
+               e.player_id IS NOT NULL as is_eligible,
+               p.id IS NOT NULL as is_active
+        from %s s
+        left join hall_of_fame hof on hof.player_id = s.player_id
+        left join hall_of_fame_eligible e on e.player_id = s.player_id
+        left join players p on p.id = s.player_id
+        %s %s ''' % (table_name, filter_, order_by)
     cur.execute(sql + str.format('limit {0}, {1}', start, limit))
     rows = cur.fetchall()
     cur.execute('select count(*) from (' + sql + ') s')

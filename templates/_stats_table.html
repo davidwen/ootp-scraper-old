@@ -25,7 +25,12 @@
       <tr>
         {% for col in cols %}
           {% if col == 'name' %}
-            <td class="player-name"><a href="http://worldbaseballhierarchy.com/lgreports/news/html/players/player_{{row.player_id}}.html">{{row.position}} {{row.name}}</a></td>
+            <td class="player-name">
+              <a href="http://worldbaseballhierarchy.com/lgreports/news/html/players/player_{{row.player_id}}.html"
+                 class="{% if row.is_hof %}hall-of-fame{% elif row.is_eligible %}eligible{% elif row.is_active %}active{% endif %}">
+                {{row.position}} {{row.name}}
+              </a>
+            </td>
           {% else %}
             <td class="{{col_classes[col]}}">
               {% if col in decimal3 %}

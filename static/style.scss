@@ -251,4 +251,27 @@ nav {
         }
         margin-bottom: 20px;
     }
+
+    .key-container {
+        margin-bottom: 10px;
+
+        span {
+            display: inline-block;
+            margin-right: 15px;
+        }
+    }
+
+    .hall-of-fame {
+        color: #c68e17;
+        font-weight: bold;
+    }
+
+    .eligible {
+        color: #a0a0a0;
+        font-weight: bold;
+    }
+
+    .active {
+        font-weight: bold;
+    }
 }

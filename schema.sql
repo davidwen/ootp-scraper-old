@@ -187,3 +187,12 @@ CREATE TABLE IF NOT EXISTS pitching_stats(
     whip REAL,
     PRIMARY KEY (player_id)
 )
+
+CREATE TABLE IF NOT EXISTS hall_of_fame (
+    player_id INTEGER,
+    year INTEGER
+)
+
+CREATE TABLE IF NOT EXISTS hall_of_fame_eligible (
+    player_id INTEGER
+)
