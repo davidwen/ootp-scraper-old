@@ -1,8 +1,12 @@
+import argparse
 import sqlite3
 from contextlib import closing
-from flask import Flask, request, g, render_template, redirect, url_for, request
+from flask import Flask, request, g, render_template, redirect, url_for, Response
+from functools import wraps
 
 app = Flask(__name__)
+USERNAME = None
+PASSWORD = None
 
 DATABASE = 'wbh.db'
 ROOT = 'http://worldbaseballhierarchy.com/lgreports/news/html/'
@@ -20,6 +24,28 @@ COMPARATORS = {
     'lt': '<',
     'eq': '='
 }
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+    return username == USERNAME and password == PASSWORD
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
 
 def connect_db():
     db = sqlite3.connect(DATABASE)
@@ -39,6 +65,7 @@ def error(reason, code=400):
     return jsonify({'error': reason}), code
 
 @app.route('/player/<int:player_id>/')
+@requires_auth
 def player(player_id):
     cur = g.db.cursor()
     cur.execute('''
@@ -56,22 +83,27 @@ def player(player_id):
         work_ethic=RATINGS[player['work_ethic']])
 
 @app.route('/player/<int:player_id>/batting')
+@requires_auth
 def batting_ratings(player_id):
     return player_ratings(player_id, 'select r.*, date from batting_ratings r', '_batting_ratings.html')
 
 @app.route('/player/<int:player_id>/pitching')
+@requires_auth
 def pitching_ratings(player_id):
     return player_ratings(player_id, 'select r.*, date from pitching_ratings r', '_pitching_ratings.html')
 
 @app.route('/player/<int:player_id>/run')
+@requires_auth
 def run_ratings(player_id):
     return player_ratings(player_id, 'select r.*, date from run_ratings r', '_run_ratings.html')
 
 @app.route('/player/<int:player_id>/fielding')
+@requires_auth
 def fielding_ratings(player_id):
     return player_ratings(player_id, 'select r.*, date from fielding_ratings r', '_fielding_ratings.html')
 
 @app.route('/player/<int:player_id>/position')
+@requires_auth
 def position_ratings(player_id):
     return player_ratings(player_id, 'select r.*, date from position_ratings r', '_position_ratings.html')
 
@@ -87,6 +119,7 @@ def player_ratings(player_id, sql, template):
         rows=rows)
 
 @app.route('/team/')
+@requires_auth
 def teams():
     cur = g.db.cursor()
     cur.execute('''
@@ -100,11 +133,13 @@ def teams():
         teams=teams)
 
 @app.route('/team/<int:team_id>/')
+@requires_auth
 def team(team_id):
     date_id, date = get_date()
     return redirect(url_for('team_date', team_id=team_id, date_id=date_id))
 
 @app.route('/team/<int:team_id>/date/<int:date_id>')
+@requires_auth
 def team_date(team_id, date_id):
     cur = g.db.cursor()
     cur.execute('select * from teams where id = ?', [team_id])
@@ -116,6 +151,7 @@ def team_date(team_id, date_id):
         date_id=date_id)
 
 @app.route('/team/<int:team_id>/date/<int:date_id>/batting')
+@requires_auth
 def team_batting(team_id, date_id):
     sql = '''
         select p.name, p.position, p.birthday, br.*, t.level
@@ -142,6 +178,7 @@ def team_batting(team_id, date_id):
     return team_bp(team_id, date_id, sql, prev_sql, '_team_batting.html')
 
 @app.route('/team/<int:team_id>/date/<int:date_id>/pitching')
+@requires_auth
 def team_pitchers(team_id, date_id):
     sql = '''
         select p.name, p.position, p.birthday, pr.*, t.level
@@ -204,11 +241,13 @@ def team_bp(team_id, date_id, sql, prev_sql, template):
         ages=ages)
 
 @app.route('/improvers/')
+@requires_auth
 def improvers():
     date_id, date = get_date()
     return redirect(url_for('improvers_date', date_id=date_id))
 
 @app.route('/improvers/<int:date_id>')
+@requires_auth
 def improvers_date(date_id):
     date_id, date = get_date(date_id=date_id)
     return render_template('improvers.html',
@@ -216,6 +255,7 @@ def improvers_date(date_id):
         date_id=date_id)
 
 @app.route('/improvers/<int:date_id>/batting')
+@requires_auth
 def improved_batting(date_id):
     max_age = int(request.args.get('maxage', '99'))
     sql = '''
@@ -245,6 +285,7 @@ def improved_batting(date_id):
     return improved_bp(date_id, max_age, sql, prev_sql, '_improvers_batting.html')
 
 @app.route('/improvers/<int:date_id>/pitching')
+@requires_auth
 def improved_pitching(date_id):
     max_age = int(request.args.get('maxage', '99'))
     sql = '''
@@ -313,10 +354,12 @@ def improved_bp(date_id, max_age, sql, prev_sql, template):
         ages=ages)
 
 @app.route('/improvers/top/')
+@requires_auth
 def top_improvers():
     return render_template('top_improvers.html')
 
 @app.route('/improvers/top/batting')
+@requires_auth
 def top_improvers_batting():
     max_age = int(request.args.get('maxage', '99'))
     min_imp = int(request.args.get('minimp', '1'))
@@ -356,6 +399,7 @@ def top_improvers_batting():
     return top_improvers_bp(max_age, min_imp, team, sql, prev_sql, '_improvers_batting.html')
 
 @app.route('/improvers/top/pitching')
+@requires_auth
 def top_improvers_pitching():
     max_age = int(request.args.get('maxage', '99'))
     min_imp = int(request.args.get('minimp', '1'))
@@ -429,11 +473,13 @@ def top_improvers_bp(max_age, min_imp, team, sql, prev_sql, template):
         ages=ages)
 
 @app.route('/dropped/')
+@requires_auth
 def dropped():
     date_id, date = get_date()
     return redirect(url_for('dropped_date', date_id=date_id))
 
 @app.route('/dropped/<int:date_id>')
+@requires_auth
 def dropped_date(date_id):
     date_id, date = get_date(date_id=date_id)
     return render_template('dropped.html',
@@ -441,6 +487,7 @@ def dropped_date(date_id):
         date_id=date_id)
 
 @app.route('/dropped/<int:date_id>/batting')
+@requires_auth
 def dropped_batting(date_id):
     date_id, date = get_date(date_id=date_id)
 
@@ -468,6 +515,7 @@ def dropped_batting(date_id):
         ages=ages)
 
 @app.route('/dropped/<int:date_id>/pitching')
+@requires_auth
 def dropped_pitching(date_id):
     date_id, date = get_date(date_id=date_id)
 
@@ -495,11 +543,13 @@ def dropped_pitching(date_id):
         ages=ages)
 
 @app.route('/waivers/')
+@requires_auth
 def waivers():
     date_id, date = get_date()
     return redirect(url_for('waivers_date', date_id=date_id))
 
 @app.route('/waivers/<int:date_id>')
+@requires_auth
 def waivers_date(date_id):
     date_id, date = get_date(date_id=date_id)
     return render_template('waivers.html',
@@ -507,6 +557,7 @@ def waivers_date(date_id):
         date_id=date_id)
 
 @app.route('/waivers/<int:date_id>/batting')
+@requires_auth
 def waivers_batting(date_id):
     date_id, date = get_date(date_id=date_id)
 
@@ -533,6 +584,7 @@ def waivers_batting(date_id):
         ages=ages)
 
 @app.route('/waivers/<int:date_id>/pitching')
+@requires_auth
 def waivers_pitching(date_id):
     date_id, date = get_date(date_id=date_id)
 
@@ -559,10 +611,12 @@ def waivers_pitching(date_id):
         ages=ages)
 
 @app.route('/upcomingfa/')
+@requires_auth
 def upcoming_fa():
     return render_template('upcomingfa.html')
 
 @app.route('/upcomingfa/batting')
+@requires_auth
 def upcoming_fa_batting():
     date_id, date = get_date()
 
@@ -587,6 +641,7 @@ def upcoming_fa_batting():
         ages=ages)
 
 @app.route('/upcomingfa/pitching')
+@requires_auth
 def upcoming_fa_pitching():
     date_id, date = get_date()
 
@@ -611,6 +666,7 @@ def upcoming_fa_pitching():
         ages=ages)
 
 @app.route('/search/')
+@requires_auth
 def search():
     cols = [
         ('Age', ['age'], ''),
@@ -640,6 +696,7 @@ def search():
         cols=cols)
 
 @app.route('/search/table')
+@requires_auth
 def search_table():
     cols = ['name'] + [c.encode('ascii', 'ignore') for c in request.args.getlist('cols[]')]
     start = int(request.args.get('start', 0))
@@ -849,4 +906,11 @@ def get_ages_from_rows(rows, date):
     return result
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('username')
+    parser.add_argument('password')
+    parser.add_argument('--port', default=5000)
+    args = parser.parse_args()
+    USERNAME = args.username
+    PASSWORD = args.password
+    app.run(debug=True, port=args.port)
