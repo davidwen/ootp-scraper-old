@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+  <head>
+    <title>WBH {{year}} Stats</title>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <!-- <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}"> -->
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap-multiselect.css') }}">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='bootstrap-multiselect.js') }}"></script>
+  </head>
+  <body class="no-nav">
+    <div class="container">
+      <div class="stats-container">
+        <h1>{{year}} {% if batting %}Batting Stats{% else %}Pitching Stats{% endif %}</h1>
+        <div class="link-container">
+          {% if batting %}
+            <a href="/stats/{{year}}/pitching/">Go to {{year}} Pitching Stats</a>
+          {% else %}
+            <a href="/stats/{{year}}/batting/">Go to {{year}} Batting Stats</a>
+          {% endif %}
+        </div>
+        <div class="table-controls">
+          <div class="pull-left">
+            <strong>
+              {% if batting %}Minimum AB: {% else %}Minimum IP: {% endif %}
+            </strong>
+            <input type="number" id="min" value="{{default_min}}">
+            <button class="btn submit-btn btn-success">Filter</button>
+          </div>
+          <div class="pull-right">
+            <span class="limit-container">
+              <strong>Show</strong>
+              <select class="multiselect limit">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="1000">1000</option>
+              </select>
+              <strong>rows</strong>
+            </span>
+            <strong class="start">1</strong>
+            <span>-</span>
+            <strong class="end"></strong>
+            <span>of</span>
+            <strong class="total"></strong>
+            <button class="btn prev-btn"><span class="glyphicon glyphicon-chevron-left"></span></button>
+            <button class="btn next-btn"><span class="glyphicon glyphicon-chevron-right"></span></button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="key-container">
+          <label class="hall-of-fame">
+            Hall of Fame
+            <input type="checkbox" name="showhof" value="true" checked>
+          </label>
+          <label class="eligible">
+            Eligible for Hall of Fame
+            <input type="checkbox" name="showeligible" value="true" checked>
+          </label>
+          <label class="active">
+            Active
+            <input type="checkbox" name="showactive" value="true" checked>
+          </label>
+          <label class="retired">
+            Retired
+            <input type="checkbox" name="showretired" value="true" checked>
+          </label>
+        </div>
+        <div id="stats-table"></div>
+      </div>
+    </div>
+  </body>
+  <script>
+  $(function() {
+    $('.multiselect').multiselect({});
+
+    $('.limit').change(function() {
+      $('.submit-btn').click();
+    });
+
+    $('.next-btn').click(function() {
+      $('.start').text(Number($('.start').text()) + Number($('.limit').val()));
+      $('.submit-btn').click();
+    });
+
+    $('.prev-btn').click(function() {
+      var newStart = Number($('.start').text()) - Number($('.limit').val());
+      if (newStart < 1) {
+        newStart = 1;
+      }
+      $('.start').text(newStart);
+      $('.submit-btn').click();
+    });
+
+    $('#stats-table').on('click', '.subheader th', function() {
+      if ($(this).hasClass('sorted')) {
+        if ($(this).hasClass('reverse')) {
+          $(this).removeClass('reverse');
+        } else {
+          $(this).addClass('reverse');
+        }
+      } else {
+        $('.sorted').removeClass('sorted');
+        $(this).addClass('sorted');
+      }
+      $('.submit-btn').click();
+    });
+
+    $('.key-container input').change(function() {
+      $('.submit-btn').click();
+    })
+
+    $('.submit-btn').click(function() {
+      var start = Number($('.start').text()) - 1;
+      var limit = $('.limit').val();
+      var sortcol = $('th.sorted').text().trim().toLowerCase();
+      var sortdir = $('th.sorted').hasClass('reverse') ? 'asc' : 'desc';
+      var min = $('#min').val();
+      var showhof = $('input[name=showhof]').is(':checked');
+      var showeligible = $('input[name=showeligible]').is(':checked');
+      var showactive = $('input[name=showactive]').is(':checked');
+      var showretired = $('input[name=showretired]').is(':checked');
+
+      $.ajax({
+        type: 'GET',
+        url: 'table',
+        data: {
+          start: start,
+          limit: limit,
+          sortcol: sortcol,
+          sortdir: sortdir,
+          min: min,
+          showhof: showhof,
+          showeligible: showeligible,
+          showactive: showactive,
+          showretired: showretired
+        },
+        success: function(html) {
+          $('#stats-table').html(html);
+          var total = Number($('input[name=total]').val());
+          var start = Number($('input[name=start]').val());
+          var end = Number($('input[name=end]').val());
+          var min = Number($('input[name=min]').val());
+          $('.total').text(total);
+          $('.start').text(start);
+          $('.end').text(end);
+          $('#min').val(min);
+          if (start == 1) {
+            $('.prev-btn').attr('disabled', true);  
+          } else {
+            $('.prev-btn').removeAttr('disabled');
+          }
+          if (end >= total) {
+            $('.next-btn').attr('disabled', true);  
+          } else {
+            $('.next-btn').removeAttr('disabled');
+          }
+        }
+      });
+    }).click();
+  });
+  </script>
+</html>
