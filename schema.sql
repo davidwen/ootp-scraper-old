@@ -129,13 +129,11 @@ CREATE TABLE IF NOT EXISTS teams(
 CREATE TABLE IF NOT EXISTS waiver_wire(
     player_id INTEGER,
     date_id INTEGER,
-    PRIMARY KEY (player_id, date_id)
-)
+    PRIMARY KEY (player_id, date_id));
 
 CREATE TABLE IF NOT EXISTS upcoming_fa(
     player_id INTEGER,
-    PRIMARY KEY (player_id)
-)
+    PRIMARY KEY (player_id));
 
 CREATE TABLE IF NOT EXISTS batting_stats(
     player_id INTEGER,
@@ -164,8 +162,7 @@ CREATE TABLE IF NOT EXISTS batting_stats(
     babip REAL,
     krate REAL,
     bbrate REAL,
-    PRIMARY KEY (player_id)
-)
+    PRIMARY KEY (player_id));
 
 CREATE TABLE IF NOT EXISTS pitching_stats(
     player_id INTEGER,
@@ -188,14 +185,65 @@ CREATE TABLE IF NOT EXISTS pitching_stats(
     war REAL,
     era REAL,
     whip REAL,
-    PRIMARY KEY (player_id)
-)
+    PRIMARY KEY (player_id));
 
 CREATE TABLE IF NOT EXISTS hall_of_fame (
     player_id INTEGER,
-    year INTEGER
-)
+    year INTEGER);
 
 CREATE TABLE IF NOT EXISTS hall_of_fame_eligible (
-    player_id INTEGER
-)
+    player_id INTEGER);
+
+CREATE TABLE IF NOT EXISTS season_batting_stats(
+    year INTEGER,
+    player_id INTEGER,
+    name TEXT,
+    position TEXT,
+    g INTEGER,
+    ab INTEGER,
+    h INTEGER,
+    double INTEGER,
+    triple INTEGER,
+    hr INTEGER,
+    rbi INTEGER,
+    r INTEGER,
+    bb INTEGER,
+    hp INTEGER,
+    sf INTEGER,
+    k INTEGER,
+    sb INTEGER,
+    cs INTEGER,
+    vorp REAL,
+    war REAL,
+    avg REAL,
+    obp REAL,
+    slg REAL,
+    ops REAL,
+    babip REAL,
+    krate REAL,
+    bbrate REAL,
+    PRIMARY KEY (player_id));
+
+CREATE TABLE IF NOT EXISTS season_pitching_stats(
+    year INTEGER,
+    player_id INTEGER,
+    name TEXT,
+    g INTEGER,
+    gs INTEGER,
+    w INTEGER,
+    l INTEGER,
+    sv INTEGER,
+    ip INTEGER,
+    ha INTEGER,
+    r INTEGER,
+    er INTEGER,
+    hr INTEGER,
+    bb INTEGER,
+    k INTEGER,
+    cg INTEGER,
+    sho INTEGER,
+    vorp REAL,
+    war REAL,
+    era REAL,
+    whip REAL,
+    PRIMARY KEY (player_id));
