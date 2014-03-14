@@ -828,8 +828,8 @@ def season_batting_stats_table(year):
     filter_ = 'where s.year = %d and ab > %d ' % (year, int(request.args.get('min')))
     return stats_table(cols, 'season_batting_stats', filter_, set(), decimal3)
 
-@app.route('/stats/<int:year>pitching/table')
-def season_pitching_stats_table():
+@app.route('/stats/<int:year>/pitching/table')
+def season_pitching_stats_table(year):
     cols = [
         'name', 'g', 'gs', 'w', 'l', 'sv',
         'ip', 'ha', 'r', 'er', 'hr', 'bb', 'k',
