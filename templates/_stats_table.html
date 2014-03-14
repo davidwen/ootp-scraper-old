@@ -29,7 +29,7 @@
     {% set rank = start %}
     {% for row in rows %}
       <tr>
-        <th>{{rank}}{% set rank = rank + 1 %}</th>
+        <td>{{rank}}{% set rank = rank + 1 %}</td>
         {% for col in cols %}
           {% if col == 'name' %}
             <td class="player-name">
