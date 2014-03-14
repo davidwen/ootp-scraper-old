@@ -913,4 +913,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     USERNAME = args.username
     PASSWORD = args.password
-    app.run(debug=True, port=args.port)
+    app.run(debug=True, port=int(args.port))
