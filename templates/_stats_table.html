@@ -16,6 +16,12 @@
             K%
           {% elif col == 'bbrate' %}
             BB%
+          {% elif col == 'k9' %}
+            K/9
+          {% elif col == 'bb9' %}
+            BB/9
+          {% elif col == 'kbb' %}
+            K/BB
           {% else %}
             {% filter upper %}
               {{col}}

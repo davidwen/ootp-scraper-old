@@ -25,6 +25,16 @@ COMPARATORS = {
     'eq': '='
 }
 
+SORTCOLS = {
+    '2b': 'double',
+    '3b': 'triple',
+    'k%': 'krate',
+    'bb%': 'bbrate',
+    'k/9': 'k9',
+    'bb/9': 'bb9',
+    'k/bb': 'kbb'
+}
+
 def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
@@ -815,9 +825,10 @@ def pitching_stats_table():
     cols = [
         'name', 'g', 'gs', 'w', 'l', 'sv',
         'ip', 'ha', 'r', 'er', 'hr', 'bb', 'k',
-        'cg', 'sho', 'vorp', 'war', 'era', 'whip'
+        'cg', 'sho', 'vorp', 'war', 'era', 'whip',
+        'k9', 'bb9', 'kbb'
     ]
-    decimal2 = set(['era', 'whip'])
+    decimal2 = set(['era', 'whip', 'k9', 'bb9', 'kbb'])
     filter_ = 'where ip > %d ' % int(request.args.get('min'))
     return stats_table(cols, 'pitching_stats', filter_, decimal2, set())
 
@@ -851,9 +862,10 @@ def season_pitching_stats_table(year):
     cols = [
         'name', 'g', 'gs', 'w', 'l', 'sv',
         'ip', 'ha', 'r', 'er', 'hr', 'bb', 'k',
-        'cg', 'sho', 'vorp', 'war', 'era', 'whip'
+        'cg', 'sho', 'vorp', 'war', 'era', 'whip',
+        'k9', 'bb9', 'kbb'
     ]
-    decimal2 = set(['era', 'whip'])
+    decimal2 = set(['era', 'whip', 'k9', 'bb9', 'kbb'])
     filter_ = 'where s.year = %d and ip > %d ' % (year, int(request.args.get('min')))
     return stats_table(cols, 'season_pitching_stats', filter_, decimal2, set())
 
@@ -862,14 +874,7 @@ def stats_table(cols, table_name, filter_, decimal2, decimal3):
     limit = int(request.args.get('limit', 25))
     end = start + limit
     sortcol = request.args.get('sortcol', None)
-    if sortcol == '2b':
-        sortcol = 'double'
-    elif sortcol == '3b':
-        sortcol = 'triple'
-    elif sortcol == 'k%':
-        sortcol = 'krate'
-    elif sortcol == 'bb%':
-        sortcol = 'bbrate'
+    sortcol = SORTCOLS.get(sortcol, sortcol)
     sortdir = request.args.get('sortdir', None)
     min_ = int(request.args.get('min'))
     show_filters = []

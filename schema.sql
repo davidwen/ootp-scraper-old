@@ -185,6 +185,9 @@ CREATE TABLE IF NOT EXISTS pitching_stats(
     war REAL,
     era REAL,
     whip REAL,
+    k9 REAL,
+    bb9 REAL,
+    kbb REAL,
     PRIMARY KEY (player_id));
 
 CREATE TABLE IF NOT EXISTS hall_of_fame (
@@ -246,4 +249,7 @@ CREATE TABLE IF NOT EXISTS season_pitching_stats(
     war REAL,
     era REAL,
     whip REAL,
+    k9 REAL,
+    bb9 REAL,
+    kbb REAL,
     PRIMARY KEY (player_id));
