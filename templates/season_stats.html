@@ -1,77 +1,64 @@
-<!doctype html>
-<html>
-  <head>
-    <title>WBH {{year}} Stats</title>
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-    <!-- <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}"> -->
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap-multiselect.css') }}">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-    <script src="{{ url_for('static', filename='bootstrap-multiselect.js') }}"></script>
-  </head>
-  <body class="no-nav">
-    <div class="container">
-      <div class="stats-container">
-        <h1>{{year}} {% if batting %}Batting Stats{% else %}Pitching Stats{% endif %}</h1>
-        <div class="link-container">
-          {% if batting %}
-            <a href="/stats/{{year}}/pitching/">Go to {{year}} Pitching Stats</a>
-          {% else %}
-            <a href="/stats/{{year}}/batting/">Go to {{year}} Batting Stats</a>
-          {% endif %}
-        </div>
-        <div class="table-controls">
-          <div class="pull-left">
-            <strong>
-              {% if batting %}Minimum AB: {% else %}Minimum IP: {% endif %}
-            </strong>
-            <input type="number" id="min" value="{{default_min}}">
-            <button class="btn submit-btn btn-success">Filter</button>
-          </div>
-          <div class="pull-right">
-            <span class="limit-container">
-              <strong>Show</strong>
-              <select class="multiselect limit">
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="1000">1000</option>
-              </select>
-              <strong>rows</strong>
-            </span>
-            <strong class="start">1</strong>
-            <span>-</span>
-            <strong class="end"></strong>
-            <span>of</span>
-            <strong class="total"></strong>
-            <button class="btn prev-btn"><span class="glyphicon glyphicon-chevron-left"></span></button>
-            <button class="btn next-btn"><span class="glyphicon glyphicon-chevron-right"></span></button>
-          </div>
-          <div class="clearfix"></div>
-        </div>
-        <div class="key-container">
-          <label class="hall-of-fame">
-            Hall of Fame
-            <input type="checkbox" name="showhof" value="true" checked>
-          </label>
-          <label class="eligible">
-            Eligible for Hall of Fame
-            <input type="checkbox" name="showeligible" value="true" checked>
-          </label>
-          <label class="active">
-            Active
-            <input type="checkbox" name="showactive" value="true" checked>
-          </label>
-          <label class="retired">
-            Retired
-            <input type="checkbox" name="showretired" value="true" checked>
-          </label>
-        </div>
-        <div id="stats-table"></div>
-      </div>
+{% extends "stats_base.html" %}
+{% set title = 'WBH Season Stats' %}
+{% block content %}
+  <div class="stats-container">
+    <h1>{{year}} {% if batting %}Batting Stats{% else %}Pitching Stats{% endif %}</h1>
+    <div class="link-container">
+      {% if batting %}
+        <a href="/stats/{{year}}/pitching/">Go to {{year}} Pitching Stats</a>
+      {% else %}
+        <a href="/stats/{{year}}/batting/">Go to {{year}} Batting Stats</a>
+      {% endif %}
     </div>
-  </body>
+    <div class="table-controls">
+      <div class="pull-left">
+        <strong>
+          {% if batting %}Minimum AB: {% else %}Minimum IP: {% endif %}
+        </strong>
+        <input type="number" id="min" value="{{default_min}}">
+        <button class="btn submit-btn btn-success">Filter</button>
+      </div>
+      <div class="pull-right">
+        <span class="limit-container">
+          <strong>Show</strong>
+          <select class="multiselect limit">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="1000">1000</option>
+          </select>
+          <strong>rows</strong>
+        </span>
+        <strong class="start">1</strong>
+        <span>-</span>
+        <strong class="end"></strong>
+        <span>of</span>
+        <strong class="total"></strong>
+        <button class="btn prev-btn"><span class="glyphicon glyphicon-chevron-left"></span></button>
+        <button class="btn next-btn"><span class="glyphicon glyphicon-chevron-right"></span></button>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <div class="key-container">
+      <label class="hall-of-fame">
+        Hall of Fame
+        <input type="checkbox" name="showhof" value="true" checked>
+      </label>
+      <label class="eligible">
+        Eligible for Hall of Fame
+        <input type="checkbox" name="showeligible" value="true" checked>
+      </label>
+      <label class="active">
+        Active
+        <input type="checkbox" name="showactive" value="true" checked>
+      </label>
+      <label class="retired">
+        Retired
+        <input type="checkbox" name="showretired" value="true" checked>
+      </label>
+    </div>
+    <div id="stats-table"></div>
+  </div>
   <script>
   $(function() {
     $('.multiselect').multiselect({});
@@ -162,4 +149,4 @@
     }).click();
   });
   </script>
-</html>
+{% endblock %}

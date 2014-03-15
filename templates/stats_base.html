@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <title>WBH All-Time Stats</title>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <!-- <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.min.css') }}"> -->
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap-multiselect.css') }}">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='bootstrap-multiselect.js') }}"></script>
+  </head>
+  <body class="no-nav">
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>
