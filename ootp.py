@@ -154,10 +154,19 @@ def team_date(team_id, date_id):
 @requires_auth
 def team_batting(team_id, date_id):
     sql = '''
-        select p.name, p.position, p.birthday, br.*, t.level
+        select p.name as name, p.position as position, p.birthday as birthday,
+          br.*, t.level as level
         from batting_ratings br
         join players p on br.player_id = p.id
-        join player_teams pt on br.player_id = pt.player_id
+        join (
+            select pt.player_id, pt.team_id
+            from player_teams pt
+            left join player_teams pt_later
+              on pt_later.player_id = pt.player_id
+              and pt_later.date_id > pt.date_id
+              and pt_later.date_id <= ?
+            where pt_later.player_id is null
+        ) pt on br.player_id = pt.player_id
         join teams t on t.id = pt.team_id
         where br.date_id = ?
         and (t.id = ? or t.parent_id = ?)
@@ -181,10 +190,19 @@ def team_batting(team_id, date_id):
 @requires_auth
 def team_pitchers(team_id, date_id):
     sql = '''
-        select p.name, p.position, p.birthday, pr.*, t.level
+        select p.name as name, p.position as position, p.birthday as birthday,
+          pr.*, t.level as level
         from pitching_ratings pr
         join players p on pr.player_id = p.id
-        join player_teams pt on pr.player_id = pt.player_id
+        join (
+            select pt.player_id, pt.team_id
+            from player_teams pt
+            left join player_teams pt_later
+              on pt_later.player_id = pt.player_id
+              and pt_later.date_id > pt.date_id
+              and pt_later.date_id <= ?
+            where pt_later.player_id is null
+        ) pt on pr.player_id = pt.player_id
         join teams t on t.id = pt.team_id
         where pr.date_id = ?
         and (t.id = ? or t.parent_id = ?)
@@ -208,7 +226,7 @@ def team_bp(team_id, date_id, sql, prev_sql, template):
     cur = g.db.cursor()
     date_id, date = get_date(date_id=date_id)
 
-    cur.execute(sql, [date_id, team_id, team_id])
+    cur.execute(sql, [date_id, date_id, team_id, team_id])
     rows = cur.fetchall()
     ratings = {}
     ids = []
