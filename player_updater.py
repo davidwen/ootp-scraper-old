@@ -14,6 +14,7 @@ RATINGS = {
     'Low': 2,
     'Very Low': 1
 }
+DATE_ID = 17
 
 class Scraper:
     def __init__(self):
@@ -29,15 +30,18 @@ class Scraper:
 
     def scrape(self):
         with closing(sqlite3.connect(DATABASE)) as db:
-            cursor = db.cursor()
-            cursor.execute('''select player_id from batting_ratings where date_id = 17''')
             player_ids = []
+            cursor = db.cursor()
+            cursor.execute('''
+                select player_id from batting_ratings where date_id = %d
+                ''' % (DATE_ID))
             for row in cursor.fetchall():
                 player_ids.append(row[0])
-            cursor.execute('''select player_id from pitching_ratings where date_id = 17''')
+            cursor.execute('''
+                select player_id from pitching_ratings where date_id = %d
+                ''', (DATE_ID))
             for row in cursor.fetchall():
                 player_ids.append(row[0])
-            print player_ids
             for player_id in player_ids:
                 filename = ROOT + '/players/player_%d.html' % player_id
                 self.read_player_file(db, player_id, filename)
@@ -85,26 +89,26 @@ class Scraper:
                     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ''', (player_id, name, birthday, leadership, loyalty, desire_for_win, greed, intelligence, work_ethic, bats, throws, position))
                 cur.execute('''
-                    delete from batting_ratings where player_id = %d and date_id < 17
-                    ''' % (player_id))
+                    delete from batting_ratings where player_id = %d and date_id < %d
+                    ''' % (player_id, DATE_ID))
                 cur.execute('''
-                    delete from pitching_ratings where player_id = %d and date_id < 17
-                    ''' % (player_id))
+                    delete from pitching_ratings where player_id = %d and date_id < %d
+                    ''' % (player_id, DATE_ID))
                 cur.execute('''
-                    delete from fielding_ratings where player_id = %d and date_id < 17
-                    ''' % (player_id))
+                    delete from fielding_ratings where player_id = %d and date_id < %d
+                    ''' % (player_id, DATE_ID))
                 cur.execute('''
-                    delete from run_ratings where player_id = %d and date_id < 17
-                    ''' % (player_id))
+                    delete from run_ratings where player_id = %d and date_id < %d
+                    ''' % (player_id, DATE_ID))
                 cur.execute('''
-                    delete from position_ratings where player_id = %d and date_id < 17
-                    ''' % (player_id))
+                    delete from position_ratings where player_id = %d and date_id < %d
+                    ''' % (player_id, DATE_ID))
                 cur.execute('''
-                    delete from player_teams where player_id = %d and date_id < 17
-                    ''' % (player_id))
+                    delete from player_teams where player_id = %d and date_id < %d
+                    ''' % (player_id, DATE_ID))
                 cur.execute('''
-                    insert or ignore into player_teams (player_id, team_id, date_id) values (%d, 0, 17)
-                    ''' % (player_id))
+                    insert or ignore into player_teams (player_id, team_id, date_id) values (%d, 0, %d)
+                    ''' % (player_id, DATE_ID))
                 db.commit()
 
     def format_date(self, date):
