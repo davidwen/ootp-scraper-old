@@ -1,0 +1,19 @@
+{% extends "stats_base.html" %}
+{% set title = 'WBH Stats' %}
+{% block content %}
+  <h1>WBH Stats Index</h1>
+  <h4>All-Time Stats</h4>
+  <ul>
+    <li><a href="batting">Batting</a></li>
+    <li><a href="pitching">Pitching</a></li>
+    <li><a href="season/batting">Batting (Single Season)</a></li>
+    <li><a href="season/pitching">Pitching (Single Season)</a></li>
+  </ul>
+  <h4>Season Stats</h4>
+  <ul>
+    {% for year in years %}
+      <li><a href="{{year}}/batting">{{year}} Batting</a></li>
+      <li><a href="{{year}}/pitching">{{year}} Pitching</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

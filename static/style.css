@@ -5,7 +5,7 @@ body {
 body.no-nav {
   padding-top: 0; }
 
-a {
+table a {
   color: #333; }
 
 nav .filter {
@@ -217,8 +217,6 @@ nav .filter {
   width: 60px; }
 .search-container .link-container, .stats-container .link-container {
   margin-bottom: 20px; }
-  .search-container .link-container a, .stats-container .link-container a {
-    color: #428bca; }
 .search-container .key-container, .stats-container .key-container {
   margin-bottom: 10px; }
   .search-container .key-container label, .stats-container .key-container label {

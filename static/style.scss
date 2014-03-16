@@ -7,8 +7,10 @@ body.no-nav {
     padding-top: 0;
 }
 
-a {
-    color: #333;
+table {
+    a {
+        color: #333;
+    }
 }
 
 nav {
@@ -249,9 +251,6 @@ nav {
     }
 
     .link-container {
-        a {
-            color: #428bca;
-        }
         margin-bottom: 20px;
     }
 

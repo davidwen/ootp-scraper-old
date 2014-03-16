@@ -797,6 +797,17 @@ def search_table():
         sortcol=sortcol,
         sortdir=sortdir)
 
+@app.route('/stats/')
+def stats():
+    cur = g.db.cursor()
+    cur.execute('''
+        select year from season_batting_stats
+        group by year
+        order by year desc''')
+    years = [row[0] for row in cur.fetchall()]
+    return render_template('stats_index.html',
+        years=years)
+
 @app.route('/stats/batting/')
 def batting_stats():
     return render_template('stats.html',
