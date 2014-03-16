@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS season_batting_stats(
     babip REAL,
     krate REAL,
     bbrate REAL,
-    PRIMARY KEY (player_id));
+    PRIMARY KEY (player_id, year));
 
 CREATE TABLE IF NOT EXISTS season_pitching_stats(
     year INTEGER,
@@ -252,4 +252,4 @@ CREATE TABLE IF NOT EXISTS season_pitching_stats(
     k9 REAL,
     bb9 REAL,
     kbb REAL,
-    PRIMARY KEY (player_id));
+    PRIMARY KEY (player_id, year));

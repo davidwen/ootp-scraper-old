@@ -1,3 +1,4 @@
+import argparse
 import os
 import re
 import sqlite3
@@ -136,12 +137,12 @@ def pitching_stats(db, soup, player_id):
     cur = db.cursor()
     cur.execute('''
         insert or replace into pitching_stats
-        (player_id, name, g, gs, w, l, sv, ip, ha, r, er, hr, bb, k, cg, sho, vorp, war, era, whip)
+        (player_id, name, g, gs, w, l, sv, ip, ha, r, er, hr, bb, k, cg, sho, vorp, war, era, whip, k9, bb9, kbb)
         values
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (player_id, name, result['G'], result['GS'], result['W'], result['L'], result['SV'], result['IP'],
               result['HA'], result['R'], result['ER'], result['HR'], result['BB'], result['K'], result['CG'],
-              result['SHO'], result['VORP'], result['WAR'], result['ERA'], result['WHIP']))
+              result['SHO'], result['VORP'], result['WAR'], result['ERA'], result['WHIP']), result['K9'], result['BB9'], result['KBB'])
     db.commit()
 
 def add_pitching_stats(result, values):
@@ -168,6 +169,11 @@ def compile_pitching_stats(result):
     outs = round(adjusted_ip * 3)
     result['ERA'] = round(ER * 9.0 / adjusted_ip, 2)
     result['WHIP'] = round((HA + BB) / adjusted_ip, 2)
+    result['K9'] = round(K * 9.0 / adjusted_ip, 2)
+    result['BB9'] = round(BB * 9.0 / adjusted_ip, 2)
+    result['KBB'] = 0
+    if BB > 0:
+        result['KBB'] = round(float(K) / BB, 2)
 
 def batting_stats(db, soup, player_id):
     name = soup.find('div', class_='reptitle').text
@@ -246,18 +252,23 @@ def compile_batting_stats(result):
 
 def season_scrape(year):
     with closing(sqlite3.connect(DATABASE)) as db:
-        cursor = db.cursor()
-        cursor.execute('select id from players')
-        for row in cursor.fetchall():
-            player_id = row[0]
+        for player_id in range(18170):
             try:
                 response = urllib2.urlopen(ROOT + '/players/player_%d.html' % player_id)
                 html = response.read()
                 soup = BeautifulSoup(html)
                 if soup.find(text=re.compile('BATTING RATINGS')) is not None:
-                    season_batting_stats(db, soup, player_id, year)
+                    if year == 'all':
+                        for y in range(2006, 2035):
+                            season_batting_stats(db, soup, player_id, y)
+                    else:
+                        season_batting_stats(db, soup, player_id, int(year))
                 elif soup.find(text=re.compile('PITCHING RATINGS')) is not None:
-                    season_pitching_stats(db, soup, player_id, year)
+                    if year == 'all':
+                        for y in range(2006, 2035):
+                            season_pitching_stats(db, soup, player_id, y)
+                    else:
+                        season_pitching_stats(db, soup, player_id, int(year))
                     
             except urllib2.HTTPError:
                 pass
@@ -281,19 +292,34 @@ def season_pitching_stats(db, soup, player_id, year):
     cur = db.cursor()
     cur.execute('''
         insert or replace into season_pitching_stats
-        (year, player_id, name, g, gs, w, l, sv, ip, ha, r, er, hr, bb, k, cg, sho, vorp, war, era, whip)
+        (year, player_id, name, g, gs, w, l, sv, ip, ha, r, er, hr, bb, k, cg, sho, vorp, war, era, whip, k9, bb9, kbb)
         values
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (year, player_id, name, result['G'], result['GS'], result['W'], result['L'], result['SV'], result['IP'],
               result['HA'], result['R'], result['ER'], result['HR'], result['BB'], result['K'], result['CG'],
-              result['SHO'], result['VORP'], result['WAR'], result['ERA'], result['WHIP']))
+              result['SHO'], result['VORP'], result['WAR'], result['ERA'], result['WHIP'], result['K9'], result['BB9'], result['KBB']))
     db.commit()
 
 def season_batting_stats(db, soup, player_id, year):
     name = soup.find('div', class_='reptitle').text
     name = name[name.find(' ') + 1:name.find('#') - 1].strip()
-    data_line = soup.find(text=re.compile('BATS:'))
-    position = data_line.split(' ')[0]
+    
+    fielding_header = soup.find(text=re.compile('CAREER FIELDING STATS'))
+    fielding_table = fielding_header.find_parents('table')[0].find_next_sibling()
+    rows = fielding_table.find_all('tr', class_=None)
+    rows = [row for row in rows if str(year) in row.contents[1].string]
+    best = (None, 0)
+    for row in rows:
+        values = [td.string for td in row.find_all('td')]
+        games = int(values[2])
+        position = values[1]
+        if games > best[1]:
+            best = (position, games)
+    position = best[0]
+    if position is None:
+        data_line = soup.find(text=re.compile('BATS:'))
+        position = data_line.split(' ')[0]
+
     header_table = soup.find(text=re.compile('Career Batting Stats'))
     table = header_table.find_parents('table')[0].find_next_sibling()
     rows = table.find_all('tr', class_=None)
@@ -326,6 +352,6 @@ if __name__ == '__main__':
     parser.add_argument('year', default=None)
     args = parser.parse_args()
     if args.year:
-        season_scrape(int(args.year))
+        season_scrape(args.year)
     else:
         scrape()

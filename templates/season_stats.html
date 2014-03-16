@@ -2,12 +2,15 @@
 {% set title = 'WBH Season Stats' %}
 {% block content %}
   <div class="stats-container">
-    <h1>{{year}} {% if batting %}Batting Stats{% else %}Pitching Stats{% endif %}</h1>
+    <h1>
+      {% if year %}{{year}}{% else %}All-Time{% endif %}
+      {% if batting %}Batting Stats{% else %}Pitching Stats{% endif %}
+    </h1>
     <div class="link-container">
       {% if batting %}
-        <a href="/stats/{{year}}/pitching/">Go to {{year}} Pitching Stats</a>
+        <a href="/stats/{{year}}/pitching/">Go to {% if year %}{{year}}{% endif %} Pitching Stats</a>
       {% else %}
-        <a href="/stats/{{year}}/batting/">Go to {{year}} Batting Stats</a>
+        <a href="/stats/{{year}}/batting/">Go to {% if year %}{{year}}{% endif %} Batting Stats</a>
       {% endif %}
     </div>
     <div class="table-controls">

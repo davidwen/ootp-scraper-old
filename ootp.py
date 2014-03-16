@@ -832,6 +832,41 @@ def pitching_stats_table():
     filter_ = 'where ip > %d ' % int(request.args.get('min'))
     return stats_table(cols, 'pitching_stats', filter_, decimal2, set())
 
+@app.route('/stats/season/batting/')
+def all_time_season_batting_stats():
+    return render_template('season_stats.html',
+        batting=True,
+        default_min=100)
+
+@app.route('/stats/season/pitching/')
+def all_time_pitching_stats():
+    return render_template('season_stats.html',
+        batting=False,
+        default_min=40)
+
+@app.route('/stats/season/batting/table')
+def all_time_season_batting_stats_table():
+    cols = [
+        'name', 'year', 'g', 'ab', 'h', 'double', 'triple', 'hr',
+        'rbi', 'r', 'bb', 'hp', 'sf', 'k', 'sb', 'cs',
+        'vorp', 'war', 'avg', 'obp', 'slg', 'ops', 'babip', 'krate', 'bbrate'
+    ]
+    decimal3 = set(['avg', 'obp', 'slg', 'ops', 'babip'])
+    filter_ = 'where ab > %d ' % (int(request.args.get('min')))
+    return stats_table(cols, 'season_batting_stats', filter_, set(), decimal3)
+
+@app.route('/stats/season/pitching/table')
+def all_time_season_pitching_stats_table():
+    cols = [
+        'name', 'year', 'g', 'gs', 'w', 'l', 'sv',
+        'ip', 'ha', 'r', 'er', 'hr', 'bb', 'k',
+        'cg', 'sho', 'vorp', 'war', 'era', 'whip',
+        'k9', 'bb9', 'kbb'
+    ]
+    decimal2 = set(['era', 'whip', 'k9', 'bb9', 'kbb'])
+    filter_ = 'where ip > %d ' % (int(request.args.get('min')))
+    return stats_table(cols, 'season_pitching_stats', filter_, decimal2, set())
+
 @app.route('/stats/<int:year>/batting/')
 def season_batting_stats(year):
     return render_template('season_stats.html',
