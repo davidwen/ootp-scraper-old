@@ -833,7 +833,7 @@ def batting_stats_table():
         'vorp', 'war', 'avg', 'obp', 'slg', 'ops', 'babip', 'krate', 'bbrate'
     ]
     decimal3 = set(['avg', 'obp', 'slg', 'ops', 'babip'])
-    filter_ = 'where ab > %d ' % int(request.args.get('min'))
+    filter_ = 'where ab + bb + hp + sf >= %d ' % int(request.args.get('min'))
     return stats_table(cols, 'batting_stats', filter_, set(), decimal3)
 
 @app.route('/stats/pitching/table')
@@ -845,7 +845,7 @@ def pitching_stats_table():
         'k9', 'bb9', 'kbb'
     ]
     decimal2 = set(['era', 'whip', 'k9', 'bb9', 'kbb'])
-    filter_ = 'where ip > %d ' % int(request.args.get('min'))
+    filter_ = 'where ip >= %d ' % int(request.args.get('min'))
     return stats_table(cols, 'pitching_stats', filter_, decimal2, set())
 
 @app.route('/stats/season/batting')
@@ -872,7 +872,7 @@ def all_time_season_batting_stats_table():
         'vorp', 'war', 'avg', 'obp', 'slg', 'ops', 'babip', 'krate', 'bbrate'
     ]
     decimal3 = set(['avg', 'obp', 'slg', 'ops', 'babip'])
-    filter_ = 'where ab > %d ' % (int(request.args.get('min')))
+    filter_ = 'where ab + bb + hp + sf >= %d ' % (int(request.args.get('min')))
     return stats_table(cols, 'season_batting_stats', filter_, set(), decimal3)
 
 @app.route('/stats/season/pitching/table')
@@ -884,7 +884,7 @@ def all_time_season_pitching_stats_table():
         'k9', 'bb9', 'kbb'
     ]
     decimal2 = set(['era', 'whip', 'k9', 'bb9', 'kbb'])
-    filter_ = 'where ip > %d ' % (int(request.args.get('min')))
+    filter_ = 'where ip >= %d ' % (int(request.args.get('min')))
     return stats_table(cols, 'season_pitching_stats', filter_, decimal2, set())
 
 @app.route('/stats/<int:year>/batting')
@@ -913,7 +913,7 @@ def season_batting_stats_table(year):
         'vorp', 'war', 'avg', 'obp', 'slg', 'ops', 'babip', 'krate', 'bbrate'
     ]
     decimal3 = set(['avg', 'obp', 'slg', 'ops', 'babip'])
-    filter_ = 'where s.year = %d and ab > %d ' % (year, int(request.args.get('min')))
+    filter_ = 'where s.year = %d and ab + bb + hp + sf >= %d ' % (year, int(request.args.get('min')))
     return stats_table(cols, 'season_batting_stats', filter_, set(), decimal3)
 
 @app.route('/stats/<int:year>/pitching/table')
@@ -925,7 +925,7 @@ def season_pitching_stats_table(year):
         'k9', 'bb9', 'kbb'
     ]
     decimal2 = set(['era', 'whip', 'k9', 'bb9', 'kbb'])
-    filter_ = 'where s.year = %d and ip > %d ' % (year, int(request.args.get('min')))
+    filter_ = 'where s.year = %d and ip >= %d ' % (year, int(request.args.get('min')))
     return stats_table(cols, 'season_pitching_stats', filter_, decimal2, set())
 
 def stats_table(cols, table_name, filter_, decimal2, decimal3):
