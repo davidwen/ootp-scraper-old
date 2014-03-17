@@ -2,9 +2,6 @@ body {
   background-color: #eee;
   padding-top: 70px; }
 
-body.no-nav {
-  padding-top: 0; }
-
 table a {
   color: #333; }
 

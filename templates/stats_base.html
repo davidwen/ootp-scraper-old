@@ -10,7 +10,48 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='bootstrap-multiselect.js') }}"></script>
   </head>
-  <body class="no-nav">
+  <body>
+    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <span class="glyphicon glyphicon-align-justify"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/stats/">Index</a></li>
+              <li role="presentation" class="divider"></li>
+              <li><a href="/stats/batting">All-Time Batting</a></li>
+              <li><a href="/stats/pitching">All-Time Pitching</a></li>
+              <li role="presentation" class="divider"></li>
+              <li><a href="/stats/season/batting">All-Time Batting (Single Season)</a></li>
+              <li><a href="/stats/season/pitching">All-Time Pitching (Single Season)</a></li>
+              <li role="presentation" class="divider"></li>
+              <li><a href="/stats/2034/batting">Last Season Batting</a></li>
+              <li><a href="/stats/2034/pitching">Last Season Pitching</a></li>
+            </ul>
+          </li>
+          {% if batting is defined %}
+            <li {% if batting %}class="active"{% endif %}><a href="batting">Batting</a></li>
+            <li {% if not batting %}class="active"{% endif %}><a href="pitching">Pitching</a></li>
+          {% endif %}
+        </ul>
+        <div class="collapse navbar-collapse">
+          <div class="navbar-center">
+            {{header}}
+          </div>
+          <p class="navbar-text navbar-right">
+            {% if year %}
+              <span class="navbar-date">
+                <a href="/stats/{{year - 1}}/{% if batting %}batting{% else %}pitching{% endif %}" class="navbar-link"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                <span class="date">{{year}}</span>
+                <a href="/stats/{{year + 1}}/{% if batting %}batting{% else %}pitching{% endif %}" class="navbar-link"><span class="glyphicon glyphicon-chevron-right"></span></a>
+              </span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </nav>
     <div class="container">
       {% block content %}{% endblock %}
     </div>

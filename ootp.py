@@ -806,19 +806,22 @@ def stats():
         order by year desc''')
     years = [row[0] for row in cur.fetchall()]
     return render_template('stats_index.html',
-        years=years)
+        years=years,
+        header='WBH Stats Index')
 
-@app.route('/stats/batting/')
+@app.route('/stats/batting')
 def batting_stats():
     return render_template('stats.html',
         batting=True,
-        default_min=500)
+        default_min=500,
+        header='All-Time Batting Stats')
 
-@app.route('/stats/pitching/')
+@app.route('/stats/pitching')
 def pitching_stats():
     return render_template('stats.html',
         batting=False,
-        default_min=200)
+        default_min=200,
+        header='All-Time Pitching Stats')
 
 @app.route('/stats/batting/table')
 def batting_stats_table():
@@ -843,17 +846,19 @@ def pitching_stats_table():
     filter_ = 'where ip > %d ' % int(request.args.get('min'))
     return stats_table(cols, 'pitching_stats', filter_, decimal2, set())
 
-@app.route('/stats/season/batting/')
+@app.route('/stats/season/batting')
 def all_time_season_batting_stats():
     return render_template('season_stats.html',
         batting=True,
-        default_min=100)
+        default_min=100,
+        header='All-Time Batting Stats (Season)')
 
-@app.route('/stats/season/pitching/')
+@app.route('/stats/season/pitching')
 def all_time_pitching_stats():
     return render_template('season_stats.html',
         batting=False,
-        default_min=40)
+        default_min=40,
+        header='All-Time Pitching Stats (Season)')
 
 @app.route('/stats/season/batting/table')
 def all_time_season_batting_stats_table():
@@ -878,19 +883,21 @@ def all_time_season_pitching_stats_table():
     filter_ = 'where ip > %d ' % (int(request.args.get('min')))
     return stats_table(cols, 'season_pitching_stats', filter_, decimal2, set())
 
-@app.route('/stats/<int:year>/batting/')
+@app.route('/stats/<int:year>/batting')
 def season_batting_stats(year):
     return render_template('season_stats.html',
         year=year,
         batting=True,
-        default_min=100)
+        default_min=100,
+        header='%d Batting Stats' % (year))
 
-@app.route('/stats/<int:year>/pitching/')
+@app.route('/stats/<int:year>/pitching')
 def season_pitching_stats(year):
     return render_template('season_stats.html',
         year=year,
         batting=False,
-        default_min=40)
+        default_min=40,
+        header='%d Pitching Stats' % (year))
 
 @app.route('/stats/<int:year>/batting/table')
 def season_batting_stats_table(year):

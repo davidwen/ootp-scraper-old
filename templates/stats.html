@@ -2,14 +2,6 @@
 {% set title = 'WBH All-Time Stats' %}
 {% block content %}
   <div class="stats-container">
-    <h1>All-Time {% if batting %}Batting Stats{% else %}Pitching Stats{% endif %}</h1>
-    <div class="link-container">
-      {% if batting %}
-        <a href="/stats/pitching/">Go to Pitching Stats</a>
-      {% else %}
-        <a href="/stats/batting/">Go to Batting Stats</a>
-      {% endif %}
-    </div>
     <div class="table-controls">
       <div class="pull-left">
         <strong>
@@ -112,11 +104,11 @@
 
       $.ajax({
         type: 'GET',
-        url: 'table',
+        url: '{% if batting %}batting{% else %}pitching{% endif %}/table',
         data: {
           start: start,
           limit: limit,
-          sortcol: sortcol,
+          sortcol: sortcol ? sortcol : 'war',
           sortdir: sortdir,
           min: min,
           showhof: showhof,
