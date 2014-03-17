@@ -814,14 +814,16 @@ def batting_stats():
     return render_template('stats.html',
         batting=True,
         default_min=500,
-        header='All-Time Batting Stats')
+        header='All-Time Batting Stats',
+        title='WBH All-Time Stats')
 
 @app.route('/stats/pitching')
 def pitching_stats():
     return render_template('stats.html',
         batting=False,
         default_min=200,
-        header='All-Time Pitching Stats')
+        header='All-Time Pitching Stats',
+        title='WBH All-Time Stats')
 
 @app.route('/stats/batting/table')
 def batting_stats_table():
@@ -848,17 +850,19 @@ def pitching_stats_table():
 
 @app.route('/stats/season/batting')
 def all_time_season_batting_stats():
-    return render_template('season_stats.html',
+    return render_template('stats.html',
         batting=True,
         default_min=100,
-        header='All-Time Batting Stats (Season)')
+        header='All-Time Single Season Batting Stats',
+        title='WBH Single Season Stats')
 
 @app.route('/stats/season/pitching')
 def all_time_pitching_stats():
-    return render_template('season_stats.html',
+    return render_template('stats.html',
         batting=False,
         default_min=40,
-        header='All-Time Pitching Stats (Season)')
+        header='All-Time Single Season Pitching Stats',
+        title='WBH Single Season Stats')
 
 @app.route('/stats/season/batting/table')
 def all_time_season_batting_stats_table():
@@ -885,19 +889,21 @@ def all_time_season_pitching_stats_table():
 
 @app.route('/stats/<int:year>/batting')
 def season_batting_stats(year):
-    return render_template('season_stats.html',
+    return render_template('stats.html',
         year=year,
         batting=True,
         default_min=100,
-        header='%d Batting Stats' % (year))
+        header='%d Batting Stats' % year,
+        title='WBH %d Stats' % year)
 
 @app.route('/stats/<int:year>/pitching')
 def season_pitching_stats(year):
-    return render_template('season_stats.html',
+    return render_template('stats.html',
         year=year,
         batting=False,
         default_min=40,
-        header='%d Pitching Stats' % (year))
+        header='%d Pitching Stats' % year,
+        title='WBH %d Stats' % year)
 
 @app.route('/stats/<int:year>/batting/table')
 def season_batting_stats_table(year):
