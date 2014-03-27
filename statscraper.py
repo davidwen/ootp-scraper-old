@@ -9,7 +9,8 @@ from contextlib import closing
 from decimal import Decimal
 
 DATABASE = 'wbh.db'
-ROOT = 'http://worldbaseballhierarchy.com/lgreports/news/html/'
+URL_ROOT = 'http://worldbaseballhierarchy.com/lgreports/news/html/'
+FILE_ROOT = '/Users/davidwen/Library/Application Support/Out of the Park Developments/OOTP Baseball 14/saved_games/WBH.lg/news/almanac_2035'
 
 class PITCHING_FIELDS:
     LEAGUE, \
@@ -106,7 +107,7 @@ def scrape():
     with closing(sqlite3.connect(DATABASE)) as db:
         for player_id in range(18170):
             try:
-                response = urllib2.urlopen(ROOT + '/players/player_%d.html' % player_id)
+                response = urllib2.urlopen(URL_ROOT + '/players/player_%d.html' % player_id)
                 html = response.read()
                 soup = BeautifulSoup(html)
                 if soup.find(text=re.compile('BATTING RATINGS')) is not None:
@@ -252,26 +253,32 @@ def compile_batting_stats(result):
 
 def season_scrape(year):
     with closing(sqlite3.connect(DATABASE)) as db:
-        for player_id in range(18170):
-            try:
-                response = urllib2.urlopen(ROOT + '/players/player_%d.html' % player_id)
-                html = response.read()
-                soup = BeautifulSoup(html)
-                if soup.find(text=re.compile('BATTING RATINGS')) is not None:
-                    if year == 'all':
+        if year == '2035':
+            for dirname, dirnames, filenames in os.walk(FILE_ROOT + '/players'):
+                for filename in filenames:
+                    if filename[0] == '.':
+                        continue
+                    player_id = int(filename[len('player_'):filename.find('.')])
+                    with open(os.path.join(dirname, filename), 'rb') as f:
+                        soup = BeautifulSoup(f.read())
+                        if soup.find(text=re.compile('BATTING RATINGS')) is not None:
+                            season_batting_stats(db, soup, player_id, int(year))
+                        elif soup.find(text=re.compile('PITCHING RATINGS')) is not None:
+                            season_pitching_stats(db, soup, player_id, int(year))
+        else:
+            for player_id in range(18170):
+                try:
+                    response = urllib2.urlopen(URL_ROOT + '/players/player_%d.html' % player_id)
+                    html = response.read()
+                    soup = BeautifulSoup(html)
+                    if soup.find(text=re.compile('BATTING RATINGS')) is not None:
                         for y in range(2006, 2035):
                             season_batting_stats(db, soup, player_id, y)
-                    else:
-                        season_batting_stats(db, soup, player_id, int(year))
-                elif soup.find(text=re.compile('PITCHING RATINGS')) is not None:
-                    if year == 'all':
+                    elif soup.find(text=re.compile('PITCHING RATINGS')) is not None:
                         for y in range(2006, 2035):
                             season_pitching_stats(db, soup, player_id, y)
-                    else:
-                        season_pitching_stats(db, soup, player_id, int(year))
-                    
-            except urllib2.HTTPError:
-                pass
+                except urllib2.HTTPError:
+                    pass
 
 def season_pitching_stats(db, soup, player_id, year):
     name = soup.find('div', class_='reptitle').text
