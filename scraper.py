@@ -4,6 +4,7 @@ import sqlite3
 
 from bs4 import BeautifulSoup
 from contextlib import closing
+from statscraper import season_pitching_stats, season_batting_stats
 
 DATABASE = 'wbh.db'
 ROOT = '/Users/davidwen/Library/Application Support/Out of the Park Developments/OOTP Baseball 14/saved_games/WBH.lg/news/almanac_2035'
@@ -198,6 +199,10 @@ class Scraper:
             self.set_run_ratings(cur, player_id, soup)
             self.set_fielding_ratings(cur, player_id, soup)
             self.set_position_ratings(cur, player_id, soup)
+            if soup.find(text=re.compile('BATTING RATINGS')) is not None:
+                season_batting_stats(db, soup, player_id, 2035)
+            elif soup.find(text=re.compile('PITCHING RATINGS')) is not None:
+                season_pitching_stats(db, soup, player_id, 2035)
             db.commit()
 
     def set_team(self, cur, player_id, soup):
