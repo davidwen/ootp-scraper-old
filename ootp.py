@@ -373,7 +373,7 @@ def improved_bp(date_id, max_age, sql, prev_sql, template):
         else:
             del ratings[player_id]
     ages = get_ages(ratings, date)
-    ids = [id for id in ids if id in ratings and ages[id] < max_age]
+    ids = [id for id in ids if id in prev_ratings and ages[id] < max_age]
     return render_template(template,
         ids=ids,
         ratings=ratings,
