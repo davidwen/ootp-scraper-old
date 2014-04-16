@@ -1,3 +1,18 @@
-{% for row in rows %}
-  <div><a href="/player/{{row.id}}">{{row.position}} {{row.name}}</div>
-{% endfor %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Player</th>
+      <th>Level</th>
+      <th>Team</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+      <tr>
+        <td><a href="/player/{{row.id}}">{{row.position}} {{row.name}}</td>
+        <td>{{row.level}}</td>
+        <td>{{row.ml_team}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

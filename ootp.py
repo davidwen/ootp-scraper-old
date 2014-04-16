@@ -811,12 +811,19 @@ def player_search():
 def player_search_results():
     cur = g.db.cursor()
     cur.execute('''
-        select *
-        from players
-        where name like ?
+        select p.*, t.level, parent_team.name as ml_team
+        from players p
+        join player_teams pt on p.id = pt.player_id
+        left join player_teams pt_later
+            on p.id = pt_later.player_id
+            and pt_later.date_id > pt.date_id
+        left join teams t on t.id = pt.team_id
+        left join teams parent_team on t.parent_id = parent_team.id
+        where p.name like ?
+        and pt_later.date_id is null
+        group by p.id
         ''', ['%' + request.args.get('query') + '%'])
     rows = cur.fetchall()
-    print rows
     return render_template('_player_search_results.html',
         rows=rows)
 
