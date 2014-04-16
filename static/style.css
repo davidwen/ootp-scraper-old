@@ -242,3 +242,11 @@ nav .filter {
   font-weight: bold; }
 .search-container .active, .stats-container .active {
   font-weight: bold; }
+
+.star {
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black; }
+
+.starred {
+  color: yellow;
+  -webkit-text-fill-color: yellow; }

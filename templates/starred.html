@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% set title = 'Starred' %}
+{% block content %}
+  <div id="starred-batting-ratings"></div>
+  <div id="starred-pitching-ratings"></div>
+
+  <script>
+  $(function() {
+    var battingUrl = '/starred/{{date_id}}/batting';
+    var pitchingUrl = '/starred/{{date_id}}/pitching'
+  });
+  </script>
+{% endblock %}

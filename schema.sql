@@ -253,3 +253,7 @@ CREATE TABLE IF NOT EXISTS season_pitching_stats(
     bb9 REAL,
     kbb REAL,
     PRIMARY KEY (player_id, year));
+
+CREATE TABLE IF NOT EXISTS starred (
+    player_id INTEGER,
+    PRIMARY KEY (player_id));

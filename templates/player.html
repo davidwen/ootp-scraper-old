@@ -5,6 +5,7 @@
   <h5>Throws: {{player.throws}}, Bats: {{player.bats}}</h5>
   <h5>Intelligence: {{intelligence}}</h5>
   <h5>Work ethic: {{work_ethic}}</h5>
+  <h5><span class="glyphicon glyphicon-star star {{starred}}"></span></h5>
   <div id="pitching-ratings"></div>
   <div id="batting-ratings"></div>
   <div id="run-ratings"></div>
@@ -30,6 +31,19 @@
     $.get('position', function(html) {
         $('#position-ratings').html(html);
       });
+
+    $('.star').click(function() {
+      var $self = $(this),
+          starred = $self.hasClass('starred');
+
+      if (starred) {
+        $self.removeClass('starred');
+      } else {
+        $self.addClass('starred');
+      }
+
+      $.post('star', {starred: !starred});
+    });
   });
   </script>
 {% endblock %}

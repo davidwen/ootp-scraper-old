@@ -11,6 +11,10 @@
         <div class="col-sm-6">
           <input type="number" id="max-age" name="maxage" class="form-control">
         </div>
+        <label for="starred" class="col-sm-6 control-label">Starred:</label>
+        <div class="col-sm-6">
+          <input type="checkbox" id="starred" name="starred" value="True" class="form-control">
+        </div>
       </div>
       <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
     </form>
@@ -23,12 +27,13 @@
     var battingUrl = '/improvers/{{date_id}}/batting';
     var pitchingUrl = '/improvers/{{date_id}}/pitching'
     $('#max-age-form').submit(function() {
-      var maxAge = $(this).find('input').val();
+      var maxAge = $(this).find('#max-age').val();
+      var starred = $(this).find('#starred').prop('checked') ? true : null;
       if (!maxAge) maxAge = 99;
       $.ajax({
         type: 'GET',
         url: battingUrl,
-        data: {maxage: maxAge},
+        data: {maxage: maxAge, starred: starred},
         success: function(html) {
           $('#improved-batting-ratings').html(html);
         }
@@ -36,7 +41,7 @@
       $.ajax({
         type: 'GET',
         url: pitchingUrl,
-        data: {maxage: maxAge},
+        data: {maxage: maxAge, starred: starred},
         success: function(html) {
           $('#improved-pitching-ratings').html(html);
         }

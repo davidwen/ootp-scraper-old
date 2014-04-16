@@ -23,6 +23,12 @@
           <input type="number" id="team" name="team" class="form-control" value="{{team_id}}">
         </div>
       </div>
+      <div class="form-group">
+        <label for="starred" class="col-sm-6 control-label">Starred:</label>
+        <div class="col-sm-6">
+          <input type="checkbox" id="starred" name="starred" value="True" class="form-control">
+        </div>
+      </div>
       <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
     </form>
   </div>
@@ -37,13 +43,14 @@
       var maxAge = $(this).find('input[name=maxage]').val();
       var minImp = $(this).find('input[name=minimp]').val();
       var team = $(this).find('input[name=team]').val();
+      var starred = $(this).find('input[name=starred]').prop('checked') ? true : null;
       if (!maxAge) maxAge = 99;
       if (!minImp) minImp = 1;
       if (!team) team = 0;
       $.ajax({
         type: 'GET',
         url: battingUrl,
-        data: {maxage: maxAge, minimp: minImp, team: team},
+        data: {maxage: maxAge, minimp: minImp, team: team, starred: starred},
         success: function(html) {
           $('#improved-batting-ratings').html(html);
         }
@@ -51,7 +58,7 @@
       $.ajax({
         type: 'GET',
         url: pitchingUrl,
-        data: {maxage: maxAge, minimp: minImp, team: team},
+        data: {maxage: maxAge, minimp: minImp, team: team, starred: starred},
         success: function(html) {
           $('#improved-pitching-ratings').html(html);
         }
@@ -68,6 +75,20 @@
         $('.filter-form').fadeIn();
       }
       return false;
+    });
+
+    $(document).on('click', '.star', function() {
+      var $self = $(this),
+          starred = $self.hasClass('starred'),
+          playerId = $self.closest('tr').data('id');
+
+      if (starred) {
+        $self.removeClass('starred');
+      } else {
+        $self.addClass('starred');
+      }
+
+      $.post('/player/' + playerId + '/star', {starred: !starred});
     });
   });
   </script>

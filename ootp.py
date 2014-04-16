@@ -79,18 +79,42 @@ def error(reason, code=400):
 def player(player_id):
     cur = g.db.cursor()
     cur.execute('''
-        select * from players where id = ?
+        select p.*, starred.player_id is not null as starred
+        from players p
+        left join starred
+            on starred.player_id = p.id
+        where p.id = ?
         ''', [player_id])
     player = cur.fetchone()
     title_href = ROOT + 'players/player_' + str(player_id) + '.html'
     date_id, date = get_date()
     age = get_age(player['birthday'], date)
+    starred = 'starred' if player['starred'] else ''
     return render_template('player.html',
         player=player,
         title_href=title_href,
         age=age,
         intelligence=RATINGS[player['intelligence']],
-        work_ethic=RATINGS[player['work_ethic']])
+        work_ethic=RATINGS[player['work_ethic']],
+        starred=starred)
+
+@app.route('/player/<int:player_id>/star', methods=['POST'])
+@requires_auth
+def star_player(player_id):
+    starred = request.form['starred'] == 'true'
+    cur = g.db.cursor()
+    if starred:
+        cur.execute('''
+            insert into starred
+            (player_id) values (?)
+            ''', [player_id])
+    else:
+        cur.execute('''
+            delete from starred
+            where player_id = ?
+            ''', [player_id])
+    g.db.commit()
+    return str(player_id)
 
 @app.route('/player/<int:player_id>/batting')
 @requires_auth
@@ -286,20 +310,25 @@ def improvers_date(date_id):
 @requires_auth
 def improved_batting(date_id):
     max_age = int(request.args.get('maxage', '99'))
+    starred = request.args.get('starred') == 'true'
+    starred_sql = 'and s.player_id is not null ' if starred else ''
     sql = '''
         select
           p.name, p.position, p.birthday, p.work_ethic, p.intelligence,
+          s.player_id is not null as starred,
           t.level, parent_team.name as ml_team, br.*,
           br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential
         from batting_ratings br
         join players p on br.player_id = p.id
+        left join starred s on p.id = s.player_id
         join player_teams pt on br.player_id = pt.player_id
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where br.date_id = ?
+        %s
         group by br.player_id
         order by potential desc
-        '''
+        ''' % starred_sql
     prev_sql = '''
         select br.*, br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential, count(*) as position
         from batting_ratings br
@@ -317,20 +346,25 @@ def improved_batting(date_id):
 @requires_auth
 def improved_pitching(date_id):
     max_age = int(request.args.get('maxage', '99'))
+    starred = request.args.get('starred') == 'true'
+    starred_sql = 'and s.player_id is not null ' if starred else ''
     sql = '''
         select
           p.name, p.position, p.birthday, p.work_ethic, p.intelligence,
+          s.player_id is not null as starred,
           t.level, parent_team.name as ml_team, pr.*,
           pr.pot_stuff + pr.pot_movement + pr.pot_control as potential
         from pitching_ratings pr
         join players p on pr.player_id = p.id
+        left join starred s on p.id = s.player_id
         join player_teams pt on pr.player_id = pt.player_id
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where pr.date_id = ?
+        %s
         group by pr.player_id
         order by potential desc
-        '''
+        ''' % starred_sql
     prev_sql = '''
         select pr.*, pr.pot_stuff + pr.pot_movement + pr.pot_control as potential, count(*) as position
         from pitching_ratings pr
@@ -363,17 +397,18 @@ def improved_bp(date_id, max_age, sql, prev_sql, template):
     diff_classes = {}
     for row in prev_rows:
         player_id = row['player_id']
-        rating = ratings[player_id]
-        if rating['potential'] > row['potential']:
-            prev_ratings[player_id] = row
-            diff_classes[player_id] = {}
-            for key in row.keys():
-                if row[key] < ratings[player_id][key]:
-                    diff_classes[player_id][key] = 'increase'
-                elif row[key] > ratings[player_id][key]:
-                    diff_classes[player_id][key] = 'decrease'
-        else:
-            del ratings[player_id]
+        if player_id in ratings:
+            rating = ratings[player_id]
+            if rating['potential'] > row['potential']:
+                prev_ratings[player_id] = row
+                diff_classes[player_id] = {}
+                for key in row.keys():
+                    if row[key] < ratings[player_id][key]:
+                        diff_classes[player_id][key] = 'increase'
+                    elif row[key] > ratings[player_id][key]:
+                        diff_classes[player_id][key] = 'decrease'
+            else:
+                del ratings[player_id]
     ages = get_ages(ratings, date)
     ids = [id for id in ids if id in prev_ratings and ages[id] < max_age]
     return render_template(template,
@@ -396,10 +431,12 @@ def top_improvers_batting():
     max_age = int(request.args.get('maxage', '99'))
     min_imp = int(request.args.get('minimp', '1'))
     team = int(request.args.get('team', '0'))
+    starred = request.args.get('starred') == 'true'
+    starred_sql = 'and s.player_id is not null ' if starred else ''
     sql = '''
         select
           p.name, p.position, p.birthday, p.work_ethic, p.intelligence,
-          t.level, br.*,
+          t.level, br.*, s.player_id is not null as starred,
           parent_team.name as ml_team, parent_team.id as ml_team_id,
           br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential
         from batting_ratings br
@@ -407,12 +444,14 @@ def top_improvers_batting():
           on br_later.player_id = br.player_id
           and br_later.date_id > br.date_id
         join players p on br.player_id = p.id
+        left join starred s on p.id = s.player_id
         join player_teams pt on br.player_id = pt.player_id
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where br_later.player_id is null
+        %s
         group by br.player_id
-        '''
+        ''' % starred_sql
     prev_sql = '''
         select
           p.name, p.position, p.birthday, t.level, br.*,
@@ -423,12 +462,14 @@ def top_improvers_batting():
           on br_earlier.player_id = br.player_id
           and br_earlier.date_id < br.date_id
         join players p on br.player_id = p.id
+        left join starred s on p.id = s.player_id
         join player_teams pt on br.player_id = pt.player_id
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where br_earlier.player_id is null
+        %s
         group by br.player_id
-        '''
+        ''' % starred_sql
     return top_improvers_bp(max_age, min_imp, team, sql, prev_sql, '_improvers_batting.html')
 
 @app.route('/improvers/top/pitching')
@@ -437,10 +478,12 @@ def top_improvers_pitching():
     max_age = int(request.args.get('maxage', '99'))
     min_imp = int(request.args.get('minimp', '1'))
     team = int(request.args.get('team', '0'))
+    starred = request.args.get('starred') == 'true'
+    starred_sql = 'and s.player_id is not null ' if starred else ''
     sql = '''
         select
           p.name, p.position, p.birthday, p.work_ethic, p.intelligence,
-          t.level, pr.*,
+          t.level, pr.*, s.player_id is not null as starred,
           parent_team.name as ml_team, parent_team.id as ml_team_id,
           pr.pot_stuff + pr.pot_movement + pr.pot_control as potential
         from pitching_ratings pr
@@ -448,12 +491,14 @@ def top_improvers_pitching():
           on pr_later.player_id = pr.player_id
           and pr_later.date_id > pr.date_Id
         join players p on pr.player_id = p.id
+        left join starred s on p.id = s.player_id
         join player_teams pt on pr.player_id = pt.player_id
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where pr_later.date_id is null
+        %s
         group by pr.player_id
-        '''
+        ''' % starred_sql
     prev_sql = '''
         select
           p.name, p.position, p.birthday, t.level, pr.*,
@@ -464,12 +509,14 @@ def top_improvers_pitching():
           on pr_earlier.player_id = pr.player_id
           and pr_earlier.date_id < pr.date_Id
         join players p on pr.player_id = p.id
+        left join starred s on p.id = s.player_id
         join player_teams pt on pr.player_id = pt.player_id
         left join teams t on t.id = pt.team_id
         left join teams parent_team on t.parent_id = parent_team.id
         where pr_earlier.date_id is null
+        %s
         group by pr.player_id
-        '''
+        ''' % starred_sql
     return top_improvers_bp(max_age, min_imp, team, sql, prev_sql, '_improvers_pitching.html')
 
 def top_improvers_bp(max_age, min_imp, team, sql, prev_sql, template):

@@ -1,12 +1,13 @@
 <table class="table ratings-table">
   <thead>
-    <th colspan="5"></th>
+    <th colspan="6"></th>
     <th colspan="5">CURRENT</th>
     <th colspan="5">POTENTIAL</th>
   </thead>
   <tbody>
     <tr class="subheader">
       <td class="player-name">Player</td>
+      <td></td>
       <td class="player-age">Age</td>
       <td class="ml-team-name">ML Team</td>
       <td>WE</td>
@@ -23,12 +24,13 @@
       <td>&nbsp;&nbsp;K&nbsp;&nbsp;</td>
     </tr>
     {% for id in ids %}
-      <tr>
+      <tr data-id="{{id}}">
         <td rowspan="2" class="player-name">
           <a href="/player/{{id}}">
             {{ratings[id].position}} {{ratings[id].name}} ({{ratings[id].level}})
           </a>
         </td>
+        <td rowspan="2" class="two-row"><span class="glyphicon glyphicon-star star {% if ratings[id].starred %}starred{% endif %}"></span></td>
         <td rowspan="2" class="player-age">{{ages[id]}}</td>
         <td rowspan="2" class="ml-team-name">{{ratings[id].ml_team}}</td>
         <td rowspan="2" class="two-row">{{ratings[id].work_ethic}}</td>
