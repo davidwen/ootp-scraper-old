@@ -288,7 +288,8 @@ def improved_batting(date_id):
     max_age = int(request.args.get('maxage', '99'))
     sql = '''
         select
-          p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, br.*,
+          p.name, p.position, p.birthday, p.work_ethic, p.intelligence,
+          t.level, parent_team.name as ml_team, br.*,
           br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential
         from batting_ratings br
         join players p on br.player_id = p.id
@@ -318,7 +319,8 @@ def improved_pitching(date_id):
     max_age = int(request.args.get('maxage', '99'))
     sql = '''
         select
-          p.name, p.position, p.birthday, t.level, parent_team.name as ml_team, pr.*,
+          p.name, p.position, p.birthday, p.work_ethic, p.intelligence,
+          t.level, parent_team.name as ml_team, pr.*,
           pr.pot_stuff + pr.pot_movement + pr.pot_control as potential
         from pitching_ratings pr
         join players p on pr.player_id = p.id
@@ -394,7 +396,8 @@ def top_improvers_batting():
     team = int(request.args.get('team', '0'))
     sql = '''
         select
-          p.name, p.position, p.birthday, t.level, br.*,
+          p.name, p.position, p.birthday, p.work_ethic, p.intelligence,
+          t.level, br.*,
           parent_team.name as ml_team, parent_team.id as ml_team_id,
           br.pot_contact + br.pot_gap + br.pot_power + br.pot_eye + br.pot_avoid_k as potential
         from batting_ratings br
@@ -434,7 +437,8 @@ def top_improvers_pitching():
     team = int(request.args.get('team', '0'))
     sql = '''
         select
-          p.name, p.position, p.birthday, t.level, pr.*,
+          p.name, p.position, p.birthday, p.work_ethic, p.intelligence,
+          t.level, pr.*,
           parent_team.name as ml_team, parent_team.id as ml_team_id,
           pr.pot_stuff + pr.pot_movement + pr.pot_control as potential
         from pitching_ratings pr

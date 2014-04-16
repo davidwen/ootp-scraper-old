@@ -158,6 +158,19 @@ nav .filter {
       font-size: 13px;
       text-align: left;
       vertical-align: middle; }
+    #team-batting-ratings td.two-row,
+    #team-pitching-ratings td.two-row,
+    #improved-batting-ratings td.two-row,
+    #improved-pitching-ratings td.two-row,
+    #dropped-batting-ratings td.two-row,
+    #dropped-pitching-ratings td.two-row,
+    #waivers-batting-ratings td.two-row,
+    #waivers-pitching-ratings td.two-row,
+    #upcoming-fa-batting-ratings td.two-row,
+    #upcoming-fa-pitching-ratings td.two-row,
+    #search-table td.two-row,
+    #stats-table td.two-row {
+      vertical-align: middle; }
 
 #stats-table td {
   text-align: left; }
