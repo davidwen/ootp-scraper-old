@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% set title = 'Player Search' %}
+{% block content %} 
+  <div>
+    <form id="player-search-form">
+      <label>
+        Name:
+        <input type="text" id="player-search">
+      </label>
+      <input type="submit" class="btn" value="Search">
+    </form>
+    <div id="player-search-results"></div>
+  </div>
+
+  <script>
+  $(function() {
+    $('#player-search-form').submit(function() {
+      $.get('/playersearchresults', {query: $('#player-search').val()}, function(html) {
+        $('#player-search-results').html(html);
+      });
+      return false;
+    });
+  });
+  </script>
+{% endblock %}

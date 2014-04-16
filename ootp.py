@@ -801,6 +801,25 @@ def search_table():
         sortcol=sortcol,
         sortdir=sortdir)
 
+@app.route('/playersearch/')
+@requires_auth
+def player_search():
+    return render_template('player_search.html')
+
+@app.route('/playersearchresults')
+@requires_auth
+def player_search_results():
+    cur = g.db.cursor()
+    cur.execute('''
+        select *
+        from players
+        where name like ?
+        ''', ['%' + request.args.get('query') + '%'])
+    rows = cur.fetchall()
+    print rows
+    return render_template('_player_search_results.html',
+        rows=rows)
+
 @app.route('/stats/')
 def stats():
     cur = g.db.cursor()
