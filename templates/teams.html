@@ -3,7 +3,7 @@
 {% block content %}
   <ul>
     {% for team in teams %}
-      <li><a href="{{team.id}}">{{team.name}}</a></li>
+      <li><a href="/improvers/top/?team={{team.id}}&amp;minimp=1">{{team.name}}</a></li>
     {% endfor %}
   </ul>
 {% endblock %}

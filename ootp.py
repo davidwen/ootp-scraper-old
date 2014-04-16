@@ -386,7 +386,9 @@ def improved_bp(date_id, max_age, sql, prev_sql, template):
 @app.route('/improvers/top/')
 @requires_auth
 def top_improvers():
-    return render_template('top_improvers.html')
+    return render_template('top_improvers.html',
+        team_id=request.args.get('team', 0),
+        min_imp=request.args.get('minimp', 2))
 
 @app.route('/improvers/top/batting')
 @requires_auth
