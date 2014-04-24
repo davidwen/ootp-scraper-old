@@ -257,3 +257,32 @@ CREATE TABLE IF NOT EXISTS season_pitching_stats(
 CREATE TABLE IF NOT EXISTS starred (
     player_id INTEGER,
     PRIMARY KEY (player_id));
+
+CREATE TABLE IF NOT EXISTS pitch_ratings(
+    player_id INTEGER,
+    date_id INTEGER,
+    fastball INTEGER,
+    changeup INTEGER,
+    curveball INTEGER,
+    slider INTEGER,
+    sinker INTEGER,
+    splitter INTEGER,
+    cutter INTEGER,
+    forkball INTEGER,
+    circle_change INTEGER,
+    screwball INTEGER,
+    knuckle_curve INTEGER,
+    knuckleball INTEGER,
+    pot_fastball INTEGER,
+    pot_changeup INTEGER,
+    pot_curveball INTEGER,
+    pot_slider INTEGER,
+    pot_sinker INTEGER,
+    pot_splitter INTEGER,
+    pot_cutter INTEGER,
+    pot_forkball INTEGER,
+    pot_circle_change INTEGER,
+    pot_screwball INTEGER,
+    pot_knuckle_curve INTEGER,
+    pot_knuckleball INTEGER,
+    PRIMARY KEY (player_id, date_id));

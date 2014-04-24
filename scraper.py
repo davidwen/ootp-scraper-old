@@ -26,6 +26,7 @@ class Scraper:
         self.run_ratings = {}
         self.fielding_ratings = {}
         self.position_ratings = {}
+        self.pitch_ratings = {}
         self.existing_players = set()
         with closing(sqlite3.connect(DATABASE)) as db:
             self.populate_batting_ratings(db)
@@ -34,6 +35,7 @@ class Scraper:
             self.populate_fielding_ratings(db)
             self.populate_position_ratings(db)
             self.populate_existing_players(db)
+            self.populate_pitch_ratings(db)
 
     def populate_batting_ratings(self, db):
         cur = db.cursor()
@@ -122,6 +124,24 @@ class Scraper:
         for row in cur.fetchall():
             self.position_ratings[row[0]] = [row[i] for i in range(1, len(row))]
 
+    def populate_pitch_ratings(self, db):
+        cur = db.cursor()
+        cur.execute('''
+            select
+              *
+            from pitching_ratings pr
+            left join pitching_ratings pr_later
+              on pr_later.player_id = pr.player_id
+              and pr_later.date_id > pr.date_id
+            where pr_later.date_id is null
+            ''')
+        col_names = [i[0] for i in cur.description]
+        for row in cur.fetchall():
+            val = {}
+            for i in range(2, len(row)):
+                val[col_names[i]] = row[i]
+            self.pitch_ratings[row[0]] = val
+
     def populate_existing_players(self, db):
         cur = db.cursor()
         cur.execute('select id from players')
@@ -193,16 +213,17 @@ class Scraper:
             if self.date_id is None:
                 self.set_date(cur, soup)
 
-            self.set_team(cur, player_id, soup)
-            self.set_batting_ratings(cur, player_id, soup)
-            self.set_pitching_ratings(cur, player_id, soup)
-            self.set_run_ratings(cur, player_id, soup)
-            self.set_fielding_ratings(cur, player_id, soup)
-            self.set_position_ratings(cur, player_id, soup)
-            if soup.find(text=re.compile('BATTING RATINGS')) is not None:
-                season_batting_stats(db, soup, player_id, 2035)
-            elif soup.find(text=re.compile('PITCHING RATINGS')) is not None:
-                season_pitching_stats(db, soup, player_id, 2035)
+            # self.set_team(cur, player_id, soup)
+            # self.set_batting_ratings(cur, player_id, soup)
+            # self.set_pitching_ratings(cur, player_id, soup)
+            # self.set_run_ratings(cur, player_id, soup)
+            # self.set_fielding_ratings(cur, player_id, soup)
+            # self.set_position_ratings(cur, player_id, soup)
+            self.set_pitch_ratings(cur, player_id, soup)
+            # if soup.find(text=re.compile('BATTING RATINGS')) is not None:
+            #     season_batting_stats(db, soup, player_id, 2035)
+            # elif soup.find(text=re.compile('PITCHING RATINGS')) is not None:
+            #     season_pitching_stats(db, soup, player_id, 2035)
             db.commit()
 
     def set_team(self, cur, player_id, soup):
@@ -412,6 +433,41 @@ class Scraper:
                  ?, ?,
                  ?)
                 ''', params)        
+
+    def set_pitch_ratings(self, cur, player_id, soup):
+        if soup.find(text=re.compile('PITCHING RATINGS')) is None:
+            return
+        ratings_table = soup.find_all('table', class_='data')[2]
+        ratings_rows = ratings_table.find_all('tr')
+        
+        ratings = {}
+        for row in ratings_rows[2:]:
+            tds = row.find_all('td')
+            if len(tds[0].text.strip()) == 0:
+                continue
+            pitch = tds[0].text.lower().replace(' ', '_')
+            ratings[pitch] = int(tds[1].text)
+            ratings['pot_' + pitch] = int(tds[2].text)
+
+        old_ratings = {}
+        if self.pitch_ratings.has_key(player_id):
+            old_ratings = self.pitch_ratings[player_id]
+        if old_ratings != ratings:
+            sql = ['player_id', 'date_id']
+            params = [player_id, self.date_id]
+            for pitch in ratings:
+                sql.append(pitch)
+                params.append(ratings[pitch])
+            cur.execute('''
+                insert into pitch_ratings
+                (''' +
+                ','.join(sql) +
+                ''')
+                values
+                (''' +
+                ','.join(['?' for i in params]) +
+                ''')
+                ''', params)
 
     def set_date(self, cur, soup):
         date = soup.find('div', style='text-align:center; color:#000000; padding-top:4px;').text

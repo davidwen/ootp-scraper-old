@@ -141,6 +141,29 @@ def fielding_ratings(player_id):
 def position_ratings(player_id):
     return player_ratings(player_id, 'select r.*, date from position_ratings r', '_position_ratings.html')
 
+@app.route('/player/<int:player_id>/pitch')
+@requires_auth
+def pitch_ratings(player_id):
+    cur = g.db.cursor()
+    cur.execute('''
+        select r.*, date from pitch_ratings r
+        join dates on date_id = dates.id
+        where player_id = ?
+        order by date desc
+        ''', [player_id])
+    rows = cur.fetchall()
+    pitch_names = [i[0] for i in cur.description]
+    exists = set()
+    for row in rows:
+        for i in range(2, len(row) - 1):
+            if row[i] is not None:
+                exists.add(pitch_names[i])
+    pitch_names = [name for name in pitch_names if name in exists]
+    return render_template('_pitch_ratings.html',
+        rows=rows,
+        exists=exists,
+        pitch_names=pitch_names)
+
 def player_ratings(player_id, sql, template):
     cur = g.db.cursor()
     cur.execute(sql + '''

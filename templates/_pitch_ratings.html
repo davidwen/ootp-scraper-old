@@ -1,0 +1,18 @@
+<table class="table ratings-table table-condensed">
+  <tbody>
+    <tr class="subheader">
+      <td class="date">Date</td>
+      {% for pitch_name in pitch_names %}
+        <td>{{pitch_name.replace('pot_', '').capitalize()}}</td>
+      {% endfor %}
+    </tr>
+    {% for row in rows %}
+      <tr>
+        <td>{{row.date}}</td>
+        {% for pitch_name in pitch_names %}
+          <td class="{% if pitch_name.find('pot_') < 0 %}current{% else %}potential{% endif %}">{{row[pitch_name]}}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
